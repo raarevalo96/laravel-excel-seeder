@@ -190,10 +190,28 @@ Hash values when seeding a CSV like this;
 	}
 ```
 
+#### Retrieving the list of tables seeded
+The list of tables that were seeded can be retrieved by reading $this->tablesSeeded, 
+which is an array of strings containing the names of the tables that were seeded.
+
+This can be used after seeding to further process tables - for example to reset id sequence numbers in postgres
+```php
+    public function updatePostgresSeqCounters() {
+        $tables = $this->tablesSeeded;
+        foreach($tables as $table) {
+            if (DB::connection()->getSchemaBuilder()->hasColumn($table, 'id')) {
+                $return = DB::select("select setval('{$table}_id_seq', max(id)) from {$table}");
+            }
+        }
+    }
+```
+
 ## License
 Laravel CSV Seeder is open-sourced software licensed under the MIT license.
 
 ## Changes
+#### 2.05
+- add tablesSeeded property to track which tables were seeded
 #### 2.04
 - add worksheet to table mapping for mapping worksheet tab names to different table names
 - add example Excel spreadsheet '/database/seeds/xlsx/classicmodels.xlsx'

@@ -181,6 +181,11 @@ class SpreadsheetSeeder extends Seeder
     /**
      * @var string[]
      */
+    public $tablesSeeded;
+
+    /**
+     * @var string[]
+     */
     private $seedHeader;
 
     /**
@@ -258,6 +263,7 @@ class SpreadsheetSeeder extends Seeder
         }
 
         if ($this->truncate) $this->seedTable->truncate();
+        $this->tablesSeeded[] = $tableName;
     }
 
     /**
