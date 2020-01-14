@@ -11,7 +11,7 @@ This project was forked from [laravel-csv-seeder](https://github.com/jeroenzwart
 - Seed from multiple spreadsheet files per Laravel seeder class
 - Automatically resolve CSV filename to table name.
 - Automatically resolve XLSX worksheet tabs to table names.
-- Automatically map CSV amd XLSX headers to table column names.
+- Automatically map CSV and XLSX headers to table column names.
 - Automatically determine delimiter for CSV files, including comma `,`, tab `\t`, pipe `|`, and semi-colon `;`
 - Skip seeding data columns by using a prefix character in the spreadsheet column header.
 - Hash values with a given array of column names.
@@ -74,7 +74,7 @@ A CSV example:
 - `tablename` *(string*) - Name of table to insert data.
 - `truncate` *(boolean TRUE)*  - Truncate the table before seeding.
 - `header` *(boolean TRUE)* - CSV has a header row, set FALSE if not.
-- `worksheetTableMapping` *(array []) - Associative array of worksheet tab names to table names; worksheetName => tableName 
+- `worksheetTableMapping` *(array [])* - Associative array of worksheet tab names to table names; worksheetName => tableName 
 - `mapping` *(array [])* - Associative array of column names in order as CSV, if empy the first row of CSV will be used as header.
 - `aliases` *(array [])* - Associative array of CSV header names and column names; csvColumnName => aliasColumnName.
 - `skipper` *(string %)* - Skip a CSV header and data to import in the table.
@@ -84,7 +84,9 @@ A CSV example:
 - `timestamps` *(string/boolean TRUE)* - Set Laravel's timestamp in the database while seeding; set as TRUE will use current time.
 - `delimiter` *(string NULL)* - The delimiter used in the CSV files.  Automatically determined by library, but can be overriden with this setting.
 - `chunk` *(integer 50)* - Insert the data of rows every `chunk` while reading the CSV. _Note: the PhpSpreadsheet library loads the entire spreadsheet file into memory.  See issue #1_
-
+- `inputEncodings` *(array [])* - Array of possible input encodings.  See https://www.php.net/manual/en/mbstring.supported-encodings.php.
+This value is used as the "from_encoding" parameter to mb_convert_encoding. If this is not specified, the internal encoding is used.
+- `outputEncoding` *(string)* - The output encoding.  Default is UTF-8.
 
 ## Details
 #### Null values
@@ -189,6 +191,20 @@ Hash values when seeding a CSV like this;
 		$this->hashable = ['password', 'salt'];
 	}
 ```
+
+#### Input and Output Encodings
+The mb_convert_encodings function is used to convert encodings.
+* $this->inputEncodings is an array of possible input encodings.  Default is `[]` which defaults to internal encoding.  See https://www.php.net/manual/en/mbstring.supported-encodings.php
+* $this->outputEncoding is the output encoding.  Default is 'UTF-8';
+```php
+	public function __construct()
+	{
+		$this->file = '/database/seeds/csvs/users.csv';
+		$this->inputEncodings = ['UTF-8', 'ISO-8859-1'];
+		$this->outputEncoding = 'UTF-8';
+	}
+```
+
 
 #### Retrieving the list of tables seeded
 The list of tables that were seeded can be retrieved by reading $this->tablesSeeded, 

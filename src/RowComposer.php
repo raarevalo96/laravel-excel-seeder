@@ -16,13 +16,15 @@ class RowComposer
     private $timestamps   = TRUE;
     private $hashable     = ['password'];
     private $validate     = [];
+    private $inputEncodings = [];
+    private $outputEncoding = "";
 
     private $key;
     private $name;
     private $value;
     private $row;
     private $composedRow;
-    
+
     /**
      * Set the header and possible options to add or parse a row
      *
@@ -32,7 +34,7 @@ class RowComposer
      * @param array $hashable
      * @param array $validate
      */
-    public function __construct( $table, $header, $defaults, $timestamps, $hashable, $validate )
+    public function __construct( $table, $header, $defaults, $timestamps, $hashable, $validate, $inputEncodings, $outputEncoding )
     {
         $this->table = $table;
 
@@ -45,6 +47,10 @@ class RowComposer
         $this->hashable = $hashable === NULL ? $this->hashable : $hashable;
 
         $this->validate = $validate === NULL ? $this->validate : $validate;
+
+        $this->inputEncodings = $inputEncodings === NULL ? $this->inputEncodings : $inputEncodings;
+
+        $this->outputEncoding = $outputEncoding === NULL ? $this->outputEncoding : $outputEncoding;
     }
 
     /**
@@ -58,7 +64,7 @@ class RowComposer
         $this->row = $row;
 
         $this->mergeRowAndHeader();
-        
+
         if( empty($this->header) or empty($this->row) ) return FALSE;
 
         $this->init();
@@ -69,10 +75,10 @@ class RowComposer
         foreach( $this->row as $this->key => $this->value )
         {
             if (!is_null($this->value)) $nullRow = false;
-            
+
             $this->transformNullCellValue();
             $this->transformEmptyValue();
-            
+
             $this->doEncode();
 
             $this->doHashable();
@@ -83,7 +89,7 @@ class RowComposer
         if ($nullRow) return false;
 
         $this->addDefaults();
-        
+
         $this->addTimestamps();
 
         return $this->composedRow;
@@ -91,7 +97,7 @@ class RowComposer
 
     /**
      * Merge/replace row keys and header values
-     * 
+     *
      * @return void
      */
     private function mergeRowAndHeader( )
@@ -106,7 +112,7 @@ class RowComposer
 
     /**
      * Clear the parsed row
-     * 
+     *
      * @return void
      */
     private function init()
@@ -116,7 +122,7 @@ class RowComposer
 
     /**
      * Validate the row
-     * 
+     *
      * @return void
      */
     private function doValidate()
@@ -138,7 +144,7 @@ class RowComposer
             $this->value = $this->table->defaultValue($this->key, $this->timestamps);
         }
     }
-    
+
     /**
      * Set the string value of a boolean to real boolean
      *
@@ -155,17 +161,17 @@ class RowComposer
 
     /**
      * Encode the value to UTF8
-     * 
+     *
      * @return void
      */
     private function doEncode()
     {
-        if( is_string($this->value) ) $this->value = utf8_encode( $this->value );
+        if( is_string($this->value) ) $this->value = mb_convert_encoding($this->value, $this->outputEncoding, $this->inputEncodings);
     }
-   
+
     /**
      * Hash the value of given column(s), default: password
-     * 
+     *
      * @return void
      */
     private function doHashable()
@@ -179,7 +185,7 @@ class RowComposer
 
     /**
      * Add a default column with value to parsed row
-     * 
+     *
      * @return void
      */
     private function addDefaults()
@@ -191,10 +197,10 @@ class RowComposer
             $this->composedRow[ $key ] = $value;
         }
     }
-    
+
     /**
      * Add timestamp to the parsed row
-     * 
+     *
      * @return void
      */
     private function addTimestamps()
@@ -205,6 +211,6 @@ class RowComposer
 
         $this->composedRow[ 'created_at' ] = $this->timestamps;
         $this->composedRow[ 'updated_at' ] = $this->timestamps;
-    }   
+    }
 
 }

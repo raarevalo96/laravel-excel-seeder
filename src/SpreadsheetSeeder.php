@@ -137,6 +137,31 @@ class SpreadsheetSeeder extends Seeder
     public $offset = 0;
 
     /**
+     * Array of possible input encodings from XLSX file
+     * See https://www.php.net/manual/en/mbstring.supported-encodings.php
+     *
+     * This value is used as the "from_encoding" parameter to mb_convert_encoding.
+     * If this is not specified, the internal encoding is used.
+     *
+     * Default: []
+     *
+     * @var string[]
+     */
+    public $inputEncodings = [];
+
+    /**
+     * Output encoding to database
+     * See https://www.php.net/manual/en/mbstring.supported-encodings.php
+     *
+     * This value is used as the "to_encoding" parameter to mb_convert_encoding.
+     *
+     * Default: "UTF-8";
+     *
+     * @var string
+     */
+    public $outputEncoding = "UTF-8";
+
+    /**
      * Insert into SQL database in blocks of CSV data while parsing the CSV file
      * Default: 50
      *
@@ -321,7 +346,7 @@ class SpreadsheetSeeder extends Seeder
      */
     private function composeRows()
     {
-        $composer = new RowComposer( $this->seedTable, $this->seedHeader, $this->defaults, $this->timestamps, $this->hashable, $this->validate );
+        $composer = new RowComposer( $this->seedTable, $this->seedHeader, $this->defaults, $this->timestamps, $this->hashable, $this->validate, $this->inputEncodings, $this->outputEncoding );
 
         foreach($this->seedWorksheet->getRowIterator() as $row)
         {
