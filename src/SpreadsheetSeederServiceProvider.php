@@ -31,6 +31,9 @@ class SpreadsheetSeederServiceProvider extends ServiceProvider
     public function register()
     {
         //
+        $this->app->singleton(SpreadsheetSeederSettings::class, function ($app) {
+            return new SpreadsheetSeederSettings();
+        });
     }
 
     /**

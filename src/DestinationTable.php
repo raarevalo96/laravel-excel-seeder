@@ -3,18 +3,32 @@
 
 namespace bfinlay\SpreadsheetSeeder;
 
-use DB;
 use Doctrine\DBAL\Schema\Column;
+use Illuminate\Support\Facades\DB;
 
-class Table
+class DestinationTable
 {
-    public $name;
-    public $exists = FALSE;
+    private $name;
+
+    /**
+     * @var bool
+     */
+    private $exists;
+
+    /**
+     * @var SpreadsheetSeederSettings
+     */
+    private $settings;
 
     /**
      * @var string[]
      */
     private $columns;
+
+    /**
+     * @var array
+     */
+    private $rows;
 
     /**
      * 
@@ -24,16 +38,23 @@ class Table
      */
     private $doctrineColumns;
 
-    public function __construct($name)
+    public function __construct($name, SpreadsheetSeederSettings $settings)
     {
         $this->name = $name;
-        $this->exists = $this->exists();
+        $this->settings = resolve(SpreadsheetSeederSettings::class);
+
+        if ($this->exists() && $this->settings->truncate) $this->truncate();
     }
 
-    private function exists() {
-        if( DB::getSchemaBuilder()->hasTable( $this->name ) ) return TRUE;
+    public function getName() {
+        return $this->name;
+    }
 
-        return FALSE;
+    public function exists() {
+        if (isset($this->exists)) return $this->exists;
+        $this->exists =  DB::getSchemaBuilder()->hasTable( $this->name );
+
+        return $this->exists;
     }
 
     public function truncate( $foreignKeys = TRUE ) {
@@ -69,13 +90,32 @@ class Table
         return in_array($columnName, $this->columns);
     }
 
+    private function transformNullCellValue($columnName, $value) {
+        if (is_null($value)) {
+            $value = $this->defaultValue($columnName);
+        }
+        return $value;
+    }
+
+    private function checkRows($rows) {
+        foreach ($rows as $row) {
+            $tableRow = [];
+            foreach ($row as $column => $value) {
+                if ($this->columnExists($column)) $tableRow[$column] = $this->transformNullCellValue($column, $value);
+            }
+            $this->rows[] = $tableRow;
+        }
+    }
+
     public function insertRows($rows) {
         if( empty($rows) ) return;
 
-        DB::table( $this->name )->insert( $rows );
+        $this->checkRows($rows);
+
+        DB::table( $this->name )->insert( $this->rows );
     }
 
-    public function defaultValue($column, $timestamps = FALSE) {
+    public function defaultValue($column) {
         $this->loadColumns();
 
         $c = $this->doctrineColumns[$column];
@@ -96,7 +136,7 @@ class Table
         // if column is date or time type return 
         $doctrineDateValues = ['date', 'date_immutable', 'datetime', 'datetime_immutable', 'datetimez', 'datetimez_immutable', 'time', 'time_immutable', 'dateinterval'];
         if (in_array($c->getType()->getName(), $doctrineDateValues)) {
-            if ($timestamps) return date('Y-m-d H:i:s');
+            if ($this->settings->timestamps) return date('Y-m-d H:i:s');
             else return 0;
         } 
             
