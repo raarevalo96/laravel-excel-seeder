@@ -27,11 +27,6 @@ class SpreadsheetSeeder extends Seeder
      */
     public $tablesSeeded;
 
-    public function __construct()
-    {
-        $this->settings = resolve(SpreadsheetSeederSettings::class);
-    }
-
     /**
      * Run the class
      *
@@ -45,6 +40,8 @@ class SpreadsheetSeeder extends Seeder
     }
 
     public function __set($name, $value) {
+        if (empty($this->settings)) $this->settings = $this->resolve(SpreadsheetSeederSettings::class);
+
         $this->settings->$name = $value;
     }
 

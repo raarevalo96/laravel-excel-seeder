@@ -52,7 +52,7 @@ class SpreadsheetSeederSettings
 
     /*
     |--------------------------------------------------------------------------
-    | Data Source File Default Extension
+    | Truncate Destination Table
     |--------------------------------------------------------------------------
     |
     | Truncate the table before seeding.
