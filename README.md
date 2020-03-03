@@ -69,8 +69,8 @@ A CSV example:
     John,Doe,1980-01-01
 ```
 ## Excel Text Output for Branch Diffs
-After running the database seeder, a text output file will be created  
-for each input file using the same name as the input file with a "txt"  
+After running the database seeder, a text output file will be created
+for each input file using the same name as the input file with a "txt"
 extension.  This text file contains a text representation of each
 worksheet (tab) in the workbook and can be used to determine
 changes in the XLS when merging branches from other contributors.
