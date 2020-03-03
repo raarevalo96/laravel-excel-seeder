@@ -24,7 +24,7 @@ This project was forked from [laravel-csv-seeder](https://github.com/jeroenzwart
 - Or add this package in your composer.json and run `composer update`
 
     ```
-    "bfinlay/laravel-excel-seeder": "~2.1"
+    "bfinlay/laravel-excel-seeder": "~2.0"
     ```
 
 ## Basic usage
@@ -68,6 +68,17 @@ A CSV example:
     Foo,Bar,1970-01-01
     John,Doe,1980-01-01
 ```
+## Excel Text Output for Branch Diffs
+After running the database seeder, a text output file will be created  
+for each input file using the same name as the input file with a "txt"  
+extension.  This text file contains a text representation of each
+worksheet (tab) in the workbook and can be used to determine
+changes in the XLS when merging branches from other contributors.
+
+Check this file into the repository so that it can serve as a basis for
+comparison.
+
+You will have to merge the XLS spreadsheet manually.
 
 ## Configuration
 ### Data Source File
@@ -427,16 +438,27 @@ This can be used after seeding to further process tables - for example to reset 
 Laravel CSV Seeder is open-sourced software licensed under the MIT license.
 
 ## Changes
-#### 2.05
+#### 2.1.0
+- Refactor code for better separation of concerns and decrease coupling between classes
+- Add feature to output textual representation of input source spreadsheets for diff
+#### 2.0.6
+- add input encodings and output encodings parameters
+#### 2.0.5
 - add tablesSeeded property to track which tables were seeded
-#### 2.04
+#### 2.0.4
 - add worksheet to table mapping for mapping worksheet tab names to different table names
 - add example Excel spreadsheet '/database/seeds/xlsx/classicmodels.xlsx'
-#### 2.03
+#### 2.0.3
 - set default 'skipper' prefix to '%'
 - recognize 'skipper' prefix strings greater than 1 character in length 
-#### 2.02
+#### 2.0.2
 - skip rows that are entirely empty cells
 - skip worksheet tabs that are prefixed with the skipper character.  This allows for additional sheets to be used for documentation, alternative designs, or intermediate calculations.
 - issue #2 - workaround to skip reading and calculating cells that are part of a skipped column.   Common use case is using `=index(X:X,match(Y,Z:Z,0))` in a skipped column to verify foreign keys.
 
+## todo
+- add section on text output diff
+- test small code changes
+- verify formatting against other csv readme
+- delete this section before checkin
+- tag as 2.1.0
