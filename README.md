@@ -33,12 +33,7 @@ Extend your seed classes with `bfinlay\SpreadsheetSeeder\SpreadsheetSeeder` and 
 use bfinlay\SpreadsheetSeeder\SpreadsheetSeeder;
 
 class UsersTableSeeder extends SpreadsheetSeeder
-{
-    public function __construct()
-    {
-        $this->file = '/database/seeds/*.xlsx'; // specify relative to Laravel project base path
-    }
-    
+{    
     /**
      * Run the database seeds.
      *
@@ -46,9 +41,9 @@ class UsersTableSeeder extends SpreadsheetSeeder
      */
     public function run()
     {
-        // Recommended when importing larger spreadsheets
-	    DB::disableQueryLog();
-	    parent::run();
+        $this->file = '/database/seeds/*.xlsx'; // specify relative to Laravel project base path
+
+	parent::run();
     }
 }
 ```
