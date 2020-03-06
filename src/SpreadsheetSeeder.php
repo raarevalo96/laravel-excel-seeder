@@ -40,7 +40,7 @@ class SpreadsheetSeeder extends Seeder
     }
 
     public function __set($name, $value) {
-        if (empty($this->settings)) $this->settings = $this->resolve(SpreadsheetSeederSettings::class);
+        if (empty($this->settings)) $this->settings = resolve(SpreadsheetSeederSettings::class);
 
         $this->settings->$name = $value;
     }
