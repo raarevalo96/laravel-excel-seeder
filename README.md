@@ -438,6 +438,8 @@ This can be used after seeding to further process tables - for example to reset 
 Laravel CSV Seeder is open-sourced software licensed under the MIT license.
 
 ## Changes
+#### 2.1.1
+- Fix bug with calling service container that prevented settings from being properly used
 #### 2.1.0
 - Refactor code for better separation of concerns and decrease coupling between classes
 - Add feature to output textual representation of input source spreadsheets for diff
