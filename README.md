@@ -26,28 +26,36 @@ This project was forked from [laravel-csv-seeder](https://github.com/jeroenzwart
     ```
     "bfinlay/laravel-excel-seeder": "~2.0"
     ```
+## Simplest Usage
+In the simplest form, you can use the `bfinlay\SpreadsheetSeeder\SpreadsheetSeeder`
+as is and it will process all XLSX files in /database/seeds/*.xlsx (relative to Laravel project base path).
 
-## Basic usage
-Extend your seed classes with `bfinlay\SpreadsheetSeeder\SpreadsheetSeeder` and set the variable `$this->file` with the paths of the spreadsheet files.  This can be a string or array of strings, and accepts wildcards.  Tablename is not required if the filename or worksheet tab of the spreadsheet is the same as the tablename. Lastly, call `parent::run()` to seed. A seed class will look like this;
+Just add the SpreadsheetSeeder to be called in your /database/seeder/DatabaseSeeder.php class.
+
 ```php
+use Illuminate\Database\Seeder;
 use bfinlay\SpreadsheetSeeder\SpreadsheetSeeder;
 
-class UsersTableSeeder extends SpreadsheetSeeder
-{    
+class DatabaseSeeder extends Seeder
+{
     /**
-     * Run the database seeds.
+     * Seed the application's database.
      *
      * @return void
      */
     public function run()
     {
-        $this->file = '/database/seeds/*.xlsx'; // specify relative to Laravel project base path
-
-	parent::run();
+        $this->call([
+            SpreadsheetSeeder::class,
+        ]);
     }
 }
 ```
-Place your spreadsheets into the path */database/seeds/* of your Laravel project or whatever path you specify in the constructor. As default the given spreadsheet requires a header row with names that match the columns names of the table in your database.  
+
+Place your spreadsheets into the path */database/seeds/* of your Laravel project.
+With the default settings, the XLSX files require worksheets with names
+that match the tables in your database and a header row with names that match the columns of the table.
+If there is only one worksheet in the XLSX, either the worksheet name or filename must match a table in the database.
 
 
 An Excel example:
@@ -63,10 +71,36 @@ A CSV example:
     Foo,Bar,1970-01-01
     John,Doe,1980-01-01
 ```
-## Excel Text Output for Branch Diffs
+
+
+## Basic usage
+In most cases you will need to configure settings.
+Create a seed class that extends `bfinlay\SpreadsheetSeeder\SpreadsheetSeeder` and configure settings on your class.  A seed class will look like this:
+```php
+use bfinlay\SpreadsheetSeeder\SpreadsheetSeeder;
+
+class UsersTableSeeder extends SpreadsheetSeeder
+{    
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        // By default, the seeder will process all XLSX files in /database/seeds/*.xlsx (relative to Laravel project base path)
+        
+        // Example setting
+        $this->worksheetTableMapping = ['Sheet1' => 'first_table', 'Sheet2' => 'second_table'];
+        
+	    parent::run();
+    }
+}
+```
+## Excel Text Markdown Output for Branch Diffs
 After running the database seeder, a text output file will be created
-for each input file using the same name as the input file with a "txt"
-extension.  This text file contains a text representation of each
+for each input file using the same name as the input file with a "md"
+extension.  This text file contains a markdown text representation of each
 worksheet (tab) in the workbook and can be used to determine
 changes in the XLS when merging branches from other contributors.
 
@@ -74,6 +108,8 @@ Check this file into the repository so that it can serve as a basis for
 comparison.
 
 You will have to merge the XLS spreadsheet manually.
+
+The file extension can be changed by setting the `textOutputFileExtension` setting.
 
 ## Configuration
 ### Data Source File
@@ -84,18 +120,72 @@ This value is the path of the Excel or CSV file used as the data
 source. This is a string or array[] and is list of files or directories
 to process, which can include wildcards.
 
+By default, the seeder will process all XLSX files in /database/seeds.
+
 The path is specified relative to the root of the project
 
 Default: `"/database/seeds/*.xlsx"`
 
+```php
+use bfinlay\SpreadsheetSeeder\SpreadsheetSeeder;
+
+class UsersTableSeeder extends SpreadsheetSeeder
+{    
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        // specify relative to Laravel project base path
+        $this->file = [
+            '/database/seeds/file1.xlsx', 
+            '/database/seeds/file2.xlsx',
+            '/database/seeds/seed*.xlsx', 
+            '/database/seeds/*.csv']; 
+        
+	parent::run();
+    }
+}
+```
+
 ### Data Source File Default Extension
-`$extension` *(string 'csv'*)
+`$extension` *(string 'xlsx'*)
 
 The default extension used when a directory is specified in $this->file
 
 Default: `"xlsx"`
 
-### Data Source File Default Extension
+```php
+use bfinlay\SpreadsheetSeeder\SpreadsheetSeeder;
+
+class UsersTableSeeder extends SpreadsheetSeeder
+{    
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        // specify relative to Laravel project base path
+        // feature directories specified
+        $this->file = [
+            '/database/seeds/feature1', 
+            '/database/seeds/feature2',
+            '/database/seeds/feature3', 
+            ]; 
+        
+        // process all xlsx and csv files in paths specified above
+        $this->extension = ['xlsx', 'csv'];
+        
+	parent::run();
+    }
+}
+```
+
+### Destination Table Name
 `$tablename` *(string*)
 
 Backward compatibility to laravel-csv-seeder
@@ -108,6 +198,33 @@ table names
 
 Default: `null`
 
+```php
+use bfinlay\SpreadsheetSeeder\SpreadsheetSeeder;
+
+class UsersTableSeeder extends SpreadsheetSeeder
+{    
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        // specify relative to Laravel project base path
+        // specify filename that is automatically dumped from an external process
+        $this->file = '/database/seeds/autodump01234456789.xlsx';  // note: could alternatively be a csv
+        
+        // specify the table this is loaded into
+        $this->table = 'sales';
+        
+        // in this example, table truncation also needs to be disabled so previous sales records are not deleted
+        $this->truncate = false;
+        
+	parent::run();
+    }
+}
+```
+
 ### Truncate Destination Table
 `$truncate` *(boolean TRUE)*
 
@@ -116,6 +233,8 @@ Truncate the table before seeding.
 Default: `TRUE`
 
 Note: does not currently support array of table names to exclude
+
+See example for [tablename](#destination-table-name) above
 
 ### Header
 `$header` *(boolean TRUE)*
@@ -142,12 +261,35 @@ to table names.
 
 Excel worksheets have a 31 character limit.
 
-This is useful when the table name should be longer than the worksheet  
+This is useful when the table name should be longer than the worksheet
 character limit.
 
 Example: `['Sheet1' => 'first_table', 'Sheet2' => 'second_table']`
 
 Default: `[]`
+
+```php
+use bfinlay\SpreadsheetSeeder\SpreadsheetSeeder;
+
+class UsersTableSeeder extends SpreadsheetSeeder
+{    
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        // specify the table this is loaded into
+        $this->worksheetTableMapping = [
+            'first_table_name_abbreviated' => 'really_rather_very_super_long_first_table_name', 
+            'second_table_name_abbreviated' => 'really_rather_very_super_long_second_table_name'
+            ];
+        
+	    parent::run();
+    }
+}
+```
 
 ### Column "Mapping"
 `$mapping` *(array [])*
@@ -192,7 +334,7 @@ This is an array of column names in the data source that should be hashed
 using Laravel's `Hash` facade.
 
 The hashing algorithm is configured in `config/hashing.php` per
-[https://laravel.com/docs/master/hashing]
+[https://laravel.com/docs/master/hashing](https://laravel.com/docs/master/hashing)
 
 Note: this setting is currently global and applies to all files or
 worksheets that are processed.  All columns with the specified name in all files
@@ -209,7 +351,7 @@ Default: `[]`
 This is an associative array mapping column names in the data source that
 should be validated to a Laravel Validator validation rule.
 The available validation rules are described here:
-[https://laravel.com/docs/master/validation#available-validation-rules]
+[https://laravel.com/docs/master/validation#available-validation-rules](https://laravel.com/docs/master/validation#available-validation-rules)
 
 Note: this setting is currently global and applies to all files or
 worksheets that are processed.  All columns with the specified name in all files
@@ -278,7 +420,7 @@ Default: `0`
 `$inputEncodings` *(array [])*
 
 Array of possible input encodings from input data source
-See [https://www.php.net/manual/en/mbstring.supported-encodings.php]
+See [https://www.php.net/manual/en/mbstring.supported-encodings.php](https://www.php.net/manual/en/mbstring.supported-encodings.php)
 
 This value is used as the "from_encoding" parameter to mb_convert_encoding.
 If this is not specified, the internal encoding is used.
@@ -289,7 +431,7 @@ Default: `[]`
 `$outputEncoding` *(string)*
 
 Output encoding to database
-See [https://www.php.net/manual/en/mbstring.supported-encodings.php]
+See [https://www.php.net/manual/en/mbstring.supported-encodings.php](https://www.php.net/manual/en/mbstring.supported-encodings.php)
 
 This value is used as the "to_encoding" parameter to mb_convert_encoding.
 
@@ -305,13 +447,26 @@ Default: `UTF-8`;
 ## Examples
 #### Table with specified timestamps
 Give the seeder a specific table name instead of using the CSV filename;
+
 ```php
-	public function __construct()
-    	{
+use bfinlay\SpreadsheetSeeder\SpreadsheetSeeder;
+
+class UsersTableSeeder extends SpreadsheetSeeder
+{    
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
 		$this->file = '/database/seeds/csvs/users.csv';
 		$this->tablename = 'email_users';
 		$this->timestamps = '1970-01-01 00:00:00';
-	}
+        
+	    parent::run();
+    }
+}
 ```
 
 #### Worksheet to Table Mapping
@@ -319,84 +474,157 @@ Map the worksheet tab names to table names.
 
 Excel worksheet tabs have a 31 character limit.  This is useful when the table name should be longer than the worksheet tab character limit.
 
-Handle like this;    
-```php
-	public function __construct()
-	{
-		$this->file = '/database/seeds/xlsx/example.xls';
-		$this->worksheetTableMapping = ['Sheet1' => 'first_table', 'Sheet2' => 'second_table'];
-	}
-```
+See [example](#worksheet-table-mapping) above
 
 #### Mapping
-Map the CSV headers to table columns, with the following CSV;
+Map the worksheet or CSV headers to table columns, with the following CSV;
 
+##### XLSX
+|    |               |               |
+|----| ------------- | ------------- |
+| 1  | Foo           | Bar           |
+| 2  | John          | Doe           |
+
+##### CSV
     1,Foo,Bar
     2,John,Doe
 
-Handle like this;    
+Example:
 ```php
-	public function __construct()
-	{
-		$this->file = '/database/seeds/csvs/users.csv';
+use bfinlay\SpreadsheetSeeder\SpreadsheetSeeder;
+
+class UsersTableSeeder extends SpreadsheetSeeder
+{    
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+		$this->file = '/database/seeds/csvs/users.xlsx';
 		$this->mapping = ['id', 'firstname', 'lastname'];
 		$this->header = FALSE;
-	}
+        
+	    parent::run();
+    }
+}
 ```
+
+Note: this mapping is a legacy laravel-csv-seeder option.   The mapping currently applies to all
+worksheets within a workbook, and is currently designed for single sheet workbooks
+and CSV files.
+
+There are two workarounds for mapping different column headers for different input files or worksheets:
+1. add header columns to your multi-sheet workbooks
+2. use CSVs or single-sheet workbooks and create a separate seeder for each that need different column mappings
 
 #### Aliases with defaults
 Seed a table with aliases and default values, like this;
+
 ```php
-	public function __construct()
-	{
+use bfinlay\SpreadsheetSeeder\SpreadsheetSeeder;
+
+class UsersTableSeeder extends SpreadsheetSeeder
+{    
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
 		$this->file = '/database/seeds/csvs/users.csv';
 		$this->aliases = ['csvColumnName' => 'table_column_name', 'foo' => 'bar'];
 		$this->defaults = ['created_by' => 'seeder', 'updated_by' => 'seeder'];
-	}
+        
+	    parent::run();
+    }
+}
 ```
 
 #### Skipper
-Skip a worksheet in a workbook, or a column in an spreadsheet or CSV with a prefix. For example you use `id` in your CSV and only usable in your CSV editor. The following CSV file looks like so;
+Skip a worksheet in a workbook, or a column in an worksheet or CSV with a prefix. For example you use `id` in your worksheet which is only usable in your workbook. The worksheet file might look like the following:
 
-    %id,first_name,last_name,%id_copy,birthday
-    1,Foo,Bar,1,1970-01-01
-    2,John,Doe,2,1980-01-01
+| %id | first_name    | last_name     | %id_copy | birthday   |
+|-----| ------------- | ------------- | -------- | ---------- |
+| 1   | Foo           | Bar           | 1        | 1970-01-01 |
+| 2   | John          | Doe           | 2        | 1980-01-01 |
 
-The first and fourth value of each row will be skipped with seeding. The default prefix is '%' and changeable
+The first and fourth value of each row will be skipped with seeding. The default prefix is '%' and changeable.  In this example the skip prefix is changed to 'skip:'
 
-_(issue: custom skipper example demonstrates using a string, but currently only a character is supported)_
+| skip:id | first_name    | last_name     | skip:id_copy | birthday   |
+|---------| ------------- | ------------- | ------------ | ---------- |
+| 1       | Foo           | Bar           | 1            | 1970-01-01 |
+| 2       | John          | Doe           | 2            | 1980-01-01 |
 
 ```php
-	public function __construct()
-	{
+use bfinlay\SpreadsheetSeeder\SpreadsheetSeeder;
+
+class UsersTableSeeder extends SpreadsheetSeeder
+{    
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
 		$this->file = '/database/seeds/csvs/users.csv';
-		$this->skipper = 'custom_';
-	}
+		$this->skipper = 'skip:';
+        
+	    parent::run();
+    }
+}
 ```
 
-To skip a worksheet in a workbook, prefix the worksheet name with '%' or the specified skipper character.
+To skip a worksheet in a workbook, prefix the worksheet name with '%' or the specified skipper prefix.
 
 #### Validate
-Validate each row of a CSV like this;
+Validate each row of an XLSX or CSV like this;
 ```php
-	public function __construct()
-	{
+use bfinlay\SpreadsheetSeeder\SpreadsheetSeeder;
+
+class UsersTableSeeder extends SpreadsheetSeeder
+{    
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
 		$this->file = '/database/seeds/csvs/users.csv';
 		$this->validate = [ 'name'              => 'required',
                             'email'             => 'email',
                             'email_verified_at' => 'date_format:Y-m-d H:i:s',
                             'password'          => ['required', Rule::notIn([' '])]];
-	}
+        
+	    parent::run();
+    }
+}
 ```
 
 #### Hash
-Hash values when seeding a CSV like this;
+Hash values when seeding an XLSX or CSV like this;
 ```php
-	public function __construct()
-	{
+use bfinlay\SpreadsheetSeeder\SpreadsheetSeeder;
+
+class UsersTableSeeder extends SpreadsheetSeeder
+{    
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
 		$this->file = '/database/seeds/csvs/users.csv';
 		$this->hashable = ['password', 'salt'];
-	}
+        
+	    parent::run();
+    }
+}
 ```
 
 #### Input and Output Encodings
@@ -404,14 +632,25 @@ The mb_convert_encodings function is used to convert encodings.
 * $this->inputEncodings is an array of possible input encodings.  Default is `[]` which defaults to internal encoding.  See [https://www.php.net/manual/en/mbstring.supported-encodings.php]
 * $this->outputEncoding is the output encoding.  Default is 'UTF-8';
 ```php
-	public function __construct()
-	{
+use bfinlay\SpreadsheetSeeder\SpreadsheetSeeder;
+
+class UsersTableSeeder extends SpreadsheetSeeder
+{    
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
 		$this->file = '/database/seeds/csvs/users.csv';
 		$this->inputEncodings = ['UTF-8', 'ISO-8859-1'];
 		$this->outputEncoding = 'UTF-8';
-	}
+        
+	    parent::run();
+    }
+}
 ```
-
 
 #### Retrieving the list of tables seeded
 The list of tables that were seeded can be retrieved by reading $this->tablesSeeded, 
@@ -428,11 +667,32 @@ This can be used after seeding to further process tables - for example to reset 
         }
     }
 ```
+```php
+use bfinlay\SpreadsheetSeeder\SpreadsheetSeeder;
+
+class UsersTableSeeder extends SpreadsheetSeeder
+{    
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+		$this->file = '/database/seeds/csvs/users.csv';
+		$this->skipper = 'skip:';
+        
+	    parent::run();
+    }
+}
+```
 
 ## License
-Laravel CSV Seeder is open-sourced software licensed under the MIT license.
+Laravel Excel Seeder is open-sourced software licensed under the MIT license.
 
 ## Changes
+#### 2.1.2
+- Update text table output to output as markdown file
 #### 2.1.1
 - Fix bug with calling service container that prevented settings from being properly used
 #### 2.1.0

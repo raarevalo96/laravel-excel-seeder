@@ -76,7 +76,7 @@ class TextOutputTable
 
         foreach ($this->header as $index => $columnName) {
             $columnHeader = str_repeat('-', $this->columnWidths[$index] + $this->columnPadding);
-            $columnSeperator = ($index > 0) ? $columnSeperator = '+' : $columnSeperator = '';
+            $columnSeperator = ($index > 0) ? $columnSeperator = '|' : $columnSeperator = '';
             $this->file->fwrite($columnSeperator . $columnHeader);
         }
         $this->file->fwrite("\n");
@@ -96,7 +96,7 @@ class TextOutputTable
 
     private function columnWidths() {
         foreach ($this->header as $index => $columnName) {
-            $this->columnWidths[$index] = strlen($columnName);
+            $this->columnWidths[$index] = max(strlen($columnName),1);
         }
 
         foreach ($this->rows as $row) {

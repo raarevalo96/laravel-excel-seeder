@@ -137,7 +137,7 @@ class SpreadsheetSeederMediator
         $filename = '';
         $path_parts = pathinfo($this->sourceFile->getPathname());
         if (strlen($path_parts['dirname']) > 0 ) $filename = $path_parts['dirname'] . '/';
-        $filename = $filename . $path_parts['filename'] . '.txt';
+        $filename = $filename . $path_parts['filename'] . '.' . $this->settings->textOutputFileExtension;
         
         $this->textOutputFile = new \SplFileObject($filename, 'w');
     }

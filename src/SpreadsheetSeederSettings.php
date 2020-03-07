@@ -303,6 +303,23 @@ class SpreadsheetSeederSettings
     */
     public $outputEncoding = "UTF-8";
 
+    /*
+    |--------------------------------------------------------------------------
+    | Text Output Table Extension
+    |--------------------------------------------------------------------------
+    |
+    | Extension for text output table
+    |
+    | After processing a workbook, the seeder outputs a text format of
+    | the sheet to assist with diff and merge of the workbook.  The default format
+    | is markdown 'md' which will render the text as tables in markdown viewers
+    | like github.   This can be changed by setting this attribute.
+    |
+    | Default: "md";
+    |
+    */
+    public $textOutputFileExtension = "md";
+
     private static $instance = null;
 
     public static function getInstance() {
