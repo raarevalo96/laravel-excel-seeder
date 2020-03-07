@@ -36,6 +36,65 @@ class TextOutputTable
      */
     private $columnPadding = 2;
 
+    /*
+     * borders - terminology
+     *
+     *  | Column 1 | Column 2 | Column 3 | <- header
+     *  |----------|----------|----------| <- header underline
+     *  |  Cell 1  |  Cell 2  |  Cell 3  | <- row
+     *   <- outside left column separator
+     *               <- column separator
+     *                         <- column separator
+     *                                     <- outside right column separator
+     */
+
+
+    /*
+     * examples:
+     *
+     * alternate - outside left, right = '|', column = '|'
+     *  | Column 1 | Column 2 | Column 3 |
+     *
+     * alternates - outside left and right are '', column = '|':
+     *    Column 1 | Column 2 | Column 3
+     */
+    private $headerOutsideLeftColumnSeparator = '|';
+    private $headerColumnSeparator = '|';
+    private $headerOutsideRightColumnSeparator = '|';
+
+    /*
+     * examples:
+     *
+     * alternate - underline = '-', column = '|', outside left and right = '|'
+     *  |-----------|----------|----------| <- underline character (characters between column separators)
+     *
+     * alternate - outside left and right = '', underline = '-', column = '|'
+     *   -----------|----------|----------
+     *
+     * alternate - column = '+', outside left and right = '', underline = '-'
+     *   -----------+----------+----------
+     *
+     * alternate - underline = '=', column = '|', outside left and right = ''
+     *   ===========|==========|==========
+     */
+    private $headerUnderlineCharacter = '-';
+    private $headerUnderlineOutsideLeftColumnSeparator = '|';
+    private $headerUnderlineColumnSeparator = '|';
+    private $headerUnderlineOutsideRightColumnSeparator = '|';
+
+    /*
+     * examples:
+     *
+     * alternate - outside left, right = '|', column = '|'
+     *  |  Cell 1  |  Cell 2  |  Cell 3  |
+     *
+     * alternates - outside left and right are '', column = '|':
+     *     Cell 1  |  Cell 2  |  Cell 3
+     */
+    private $rowOutsideLeftColumnSeparator = '|';
+    private $rowColumnSeparator = '|';
+    private $rowOutsideRightColumnSeparator = '|';
+
     /**
      * TextOutputTable constructor.
      * @param \SplFileObject $file
@@ -69,27 +128,27 @@ class TextOutputTable
     private function writeTableHeader() {
         foreach ($this->header as $index => $columnName) {
             $columnHeader = str_pad($columnName, $this->columnWidths[$index] + $this->columnPadding, " ", STR_PAD_BOTH);
-            $columnSeperator = ($index > 0) ? $columnSeperator = '|' : $columnSeperator = '';
-            $this->file->fwrite($columnSeperator . $columnHeader);
+            $columnSeparator = ($index > 0) ? $columnSeparator = $this->headerColumnSeparator : $this->headerOutsideLeftColumnSeparator;
+            $this->file->fwrite($columnSeparator . $columnHeader);
         }
-        $this->file->fwrite("\n");
+        $this->file->fwrite($this->headerOutsideRightColumnSeparator . "\n");
 
         foreach ($this->header as $index => $columnName) {
-            $columnHeader = str_repeat('-', $this->columnWidths[$index] + $this->columnPadding);
-            $columnSeperator = ($index > 0) ? $columnSeperator = '|' : $columnSeperator = '';
-            $this->file->fwrite($columnSeperator . $columnHeader);
+            $columnHeader = str_repeat($this->headerUnderlineCharacter, $this->columnWidths[$index] + $this->columnPadding);
+            $columnSeparator = ($index > 0) ? $columnSeparator = $this->headerUnderlineColumnSeparator : $columnSeparator = $this->headerUnderlineOutsideLeftColumnSeparator;
+            $this->file->fwrite($columnSeparator . $columnHeader);
         }
-        $this->file->fwrite("\n");
+        $this->file->fwrite($this->headerUnderlineOutsideRightColumnSeparator . "\n");
     }
 
     private function writeTableRows() {
         foreach ($this->rows as $row) {
             foreach ($row as $index => $value) {
                 $valueCell = str_pad($value, $this->columnWidths[$index]);
-                $columnSeperator = ($index > 0) ? $columnSeperator = '|' : $columnSeperator = '';
-                $this->file->fwrite($columnSeperator . ' ' . $valueCell . ' ');
+                $columnSeparator = ($index > 0) ? $columnSeparator = $this->rowColumnSeparator : $columnSeparator = $this->rowOutsideLeftColumnSeparator;
+                $this->file->fwrite($columnSeparator . ' ' . $valueCell . ' ');
             }
-            $this->file->fwrite("\n");
+            $this->file->fwrite($this->rowOutsideRightColumnSeparator . "\n");
         }
         $this->file->fwrite('(' . count($this->rows) . " rows)\n\n");
     }

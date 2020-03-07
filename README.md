@@ -691,6 +691,9 @@ class UsersTableSeeder extends SpreadsheetSeeder
 Laravel Excel Seeder is open-sourced software licensed under the MIT license.
 
 ## Changes
+#### 2.1.3
+- Parameterize text table output to achieve different text table presentations
+- Fix markdown issue where some tables with empty columns would not be rendered unless the outside column '|' symbols were present
 #### 2.1.2
 - Update text table output to output as markdown file
 #### 2.1.1
