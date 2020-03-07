@@ -445,8 +445,9 @@ Default: `UTF-8`;
 - If the entire row consists of empty cells, the row is skipped.  To intentionally insert a null row, put the string value 'null' in each cell
 
 ## Examples
-#### Table with specified timestamps
-Give the seeder a specific table name instead of using the CSV filename;
+#### Table with specified timestamps and specificied table name
+Use a specific timestamp for 'created_at' and 'updated_at' and also
+give the seeder a specific table name instead of using the CSV filename;
 
 ```php
 use bfinlay\SpreadsheetSeeder\SpreadsheetSeeder;
@@ -502,7 +503,7 @@ class UsersTableSeeder extends SpreadsheetSeeder
      */
     public function run()
     {
-        $this->file = '/database/seeds/csvs/users.xlsx';
+        $this->file = '/database/seeds/users.xlsx';
         $this->mapping = ['id', 'firstname', 'lastname'];
         $this->header = FALSE;
         
@@ -544,7 +545,7 @@ class UsersTableSeeder extends SpreadsheetSeeder
 ```
 
 #### Skipper
-Skip a worksheet in a workbook, or a column in an worksheet or CSV with a prefix. For example you use `id` in your worksheet which is only usable in your workbook. The worksheet file might look like the following:
+Skip a worksheet in a workbook, or a column in an XLSX or CSV with a prefix. For example you use `id` in your worksheet which is only usable in your workbook. The worksheet file might look like the following:
 
 | %id | first_name    | last_name     | %id_copy | birthday   |
 |-----| ------------- | ------------- | -------- | ---------- |
@@ -570,7 +571,7 @@ class UsersTableSeeder extends SpreadsheetSeeder
      */
     public function run()
     {
-        $this->file = '/database/seeds/csvs/users.csv';
+        $this->file = '/database/seeds/users.xlsx';
         $this->skipper = 'skip:';
         
         parent::run();
@@ -594,7 +595,7 @@ class UsersTableSeeder extends SpreadsheetSeeder
      */
     public function run()
     {
-        $this->file = '/database/seeds/csvs/users.csv';
+        $this->file = '/database/seeds/users.xlsx';
         $this->validate = [ 'name'              => 'required',
                             'email'             => 'email',
                             'email_verified_at' => 'date_format:Y-m-d H:i:s',
@@ -619,7 +620,7 @@ class UsersTableSeeder extends SpreadsheetSeeder
      */
     public function run()
     {
-        $this->file = '/database/seeds/csvs/users.csv';
+        $this->file = '/database/seeds/users.xlsx';
         $this->hashable = ['password', 'salt'];
         
         parent::run();
@@ -643,7 +644,7 @@ class UsersTableSeeder extends SpreadsheetSeeder
      */
     public function run()
     {
-        $this->file = '/database/seeds/csvs/users.csv';
+        $this->file = '/database/seeds/users.xlsx';
         $this->inputEncodings = ['UTF-8', 'ISO-8859-1'];
         $this->outputEncoding = 'UTF-8';
         
@@ -666,25 +667,6 @@ This can be used after seeding to further process tables - for example to reset 
             }
         }
     }
-```
-```php
-use bfinlay\SpreadsheetSeeder\SpreadsheetSeeder;
-
-class UsersTableSeeder extends SpreadsheetSeeder
-{    
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
-    {
-        $this->file = '/database/seeds/csvs/users.csv';
-        $this->skipper = 'skip:';
-        
-        parent::run();
-    }
-}
 ```
 
 ## License
