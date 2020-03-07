@@ -145,7 +145,7 @@ class UsersTableSeeder extends SpreadsheetSeeder
             '/database/seeds/seed*.xlsx', 
             '/database/seeds/*.csv']; 
         
-    parent::run();
+        parent::run();
     }
 }
 ```
@@ -180,7 +180,7 @@ class UsersTableSeeder extends SpreadsheetSeeder
         // process all xlsx and csv files in paths specified above
         $this->extension = ['xlsx', 'csv'];
         
-    parent::run();
+        parent::run();
     }
 }
 ```
@@ -220,7 +220,7 @@ class UsersTableSeeder extends SpreadsheetSeeder
         // in this example, table truncation also needs to be disabled so previous sales records are not deleted
         $this->truncate = false;
         
-    parent::run();
+        parent::run();
     }
 }
 ```
