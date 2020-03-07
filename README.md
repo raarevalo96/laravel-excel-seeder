@@ -53,9 +53,11 @@ class DatabaseSeeder extends Seeder
 ```
 
 Place your spreadsheets into the path */database/seeds/* of your Laravel project.
-With the default settings, the XLSX files require worksheets with names
-that match the tables in your database and a header row with names that match the columns of the table.
-If there is only one worksheet in the XLSX, either the worksheet name or filename must match a table in the database.
+
+With the default settings, the seeder makes certain assumptions about the XLSX files:
+* worksheet (tab) names match --> table names in database
+* worksheet (tab) has a header row and the column names match --> table column names in database
+* If there is only one worksheet in the XLSX workbook either the worksheet (tab) name or workbook filename must match a table in the database. 
 
 
 An Excel example:
