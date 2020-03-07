@@ -104,12 +104,12 @@ After running the database seeder, a text output file will be created
 for each input file using the same name as the input file with a "md"
 extension.  This text file contains a markdown text representation of each
 worksheet (tab) in the workbook and can be used to determine
-changes in the XLS when merging branches from other contributors.
+changes in the XLSX when merging branches from other contributors.
 
 Check this file into the repository so that it can serve as a basis for
 comparison.
 
-You will have to merge the XLS spreadsheet manually.
+You will have to merge the XLSX spreadsheet manually.
 
 The file extension can be changed by setting the `textOutputFileExtension` setting.
 
