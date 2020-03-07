@@ -93,7 +93,7 @@ class UsersTableSeeder extends SpreadsheetSeeder
         // Example setting
         $this->worksheetTableMapping = ['Sheet1' => 'first_table', 'Sheet2' => 'second_table'];
         
-	    parent::run();
+        parent::run();
     }
 }
 ```
@@ -145,7 +145,7 @@ class UsersTableSeeder extends SpreadsheetSeeder
             '/database/seeds/seed*.xlsx', 
             '/database/seeds/*.csv']; 
         
-	parent::run();
+    parent::run();
     }
 }
 ```
@@ -180,7 +180,7 @@ class UsersTableSeeder extends SpreadsheetSeeder
         // process all xlsx and csv files in paths specified above
         $this->extension = ['xlsx', 'csv'];
         
-	parent::run();
+    parent::run();
     }
 }
 ```
@@ -220,7 +220,7 @@ class UsersTableSeeder extends SpreadsheetSeeder
         // in this example, table truncation also needs to be disabled so previous sales records are not deleted
         $this->truncate = false;
         
-	parent::run();
+    parent::run();
     }
 }
 ```
@@ -286,7 +286,7 @@ class UsersTableSeeder extends SpreadsheetSeeder
             'second_table_name_abbreviated' => 'really_rather_very_super_long_second_table_name'
             ];
         
-	    parent::run();
+        parent::run();
     }
 }
 ```
@@ -460,11 +460,11 @@ class UsersTableSeeder extends SpreadsheetSeeder
      */
     public function run()
     {
-		$this->file = '/database/seeds/csvs/users.csv';
-		$this->tablename = 'email_users';
-		$this->timestamps = '1970-01-01 00:00:00';
+        $this->file = '/database/seeds/csvs/users.csv';
+        $this->tablename = 'email_users';
+        $this->timestamps = '1970-01-01 00:00:00';
         
-	    parent::run();
+        parent::run();
     }
 }
 ```
@@ -502,11 +502,11 @@ class UsersTableSeeder extends SpreadsheetSeeder
      */
     public function run()
     {
-		$this->file = '/database/seeds/csvs/users.xlsx';
-		$this->mapping = ['id', 'firstname', 'lastname'];
-		$this->header = FALSE;
+        $this->file = '/database/seeds/csvs/users.xlsx';
+        $this->mapping = ['id', 'firstname', 'lastname'];
+        $this->header = FALSE;
         
-	    parent::run();
+        parent::run();
     }
 }
 ```
@@ -534,11 +534,11 @@ class UsersTableSeeder extends SpreadsheetSeeder
      */
     public function run()
     {
-		$this->file = '/database/seeds/csvs/users.csv';
-		$this->aliases = ['csvColumnName' => 'table_column_name', 'foo' => 'bar'];
-		$this->defaults = ['created_by' => 'seeder', 'updated_by' => 'seeder'];
+        $this->file = '/database/seeds/csvs/users.csv';
+        $this->aliases = ['csvColumnName' => 'table_column_name', 'foo' => 'bar'];
+        $this->defaults = ['created_by' => 'seeder', 'updated_by' => 'seeder'];
         
-	    parent::run();
+        parent::run();
     }
 }
 ```
@@ -570,10 +570,10 @@ class UsersTableSeeder extends SpreadsheetSeeder
      */
     public function run()
     {
-		$this->file = '/database/seeds/csvs/users.csv';
-		$this->skipper = 'skip:';
+        $this->file = '/database/seeds/csvs/users.csv';
+        $this->skipper = 'skip:';
         
-	    parent::run();
+        parent::run();
     }
 }
 ```
@@ -594,13 +594,13 @@ class UsersTableSeeder extends SpreadsheetSeeder
      */
     public function run()
     {
-		$this->file = '/database/seeds/csvs/users.csv';
-		$this->validate = [ 'name'              => 'required',
+        $this->file = '/database/seeds/csvs/users.csv';
+        $this->validate = [ 'name'              => 'required',
                             'email'             => 'email',
                             'email_verified_at' => 'date_format:Y-m-d H:i:s',
                             'password'          => ['required', Rule::notIn([' '])]];
         
-	    parent::run();
+        parent::run();
     }
 }
 ```
@@ -619,10 +619,10 @@ class UsersTableSeeder extends SpreadsheetSeeder
      */
     public function run()
     {
-		$this->file = '/database/seeds/csvs/users.csv';
-		$this->hashable = ['password', 'salt'];
+        $this->file = '/database/seeds/csvs/users.csv';
+        $this->hashable = ['password', 'salt'];
         
-	    parent::run();
+        parent::run();
     }
 }
 ```
@@ -643,11 +643,11 @@ class UsersTableSeeder extends SpreadsheetSeeder
      */
     public function run()
     {
-		$this->file = '/database/seeds/csvs/users.csv';
-		$this->inputEncodings = ['UTF-8', 'ISO-8859-1'];
-		$this->outputEncoding = 'UTF-8';
+        $this->file = '/database/seeds/csvs/users.csv';
+        $this->inputEncodings = ['UTF-8', 'ISO-8859-1'];
+        $this->outputEncoding = 'UTF-8';
         
-	    parent::run();
+        parent::run();
     }
 }
 ```
@@ -679,10 +679,10 @@ class UsersTableSeeder extends SpreadsheetSeeder
      */
     public function run()
     {
-		$this->file = '/database/seeds/csvs/users.csv';
-		$this->skipper = 'skip:';
+        $this->file = '/database/seeds/csvs/users.csv';
+        $this->skipper = 'skip:';
         
-	    parent::run();
+        parent::run();
     }
 }
 ```
