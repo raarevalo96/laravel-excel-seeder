@@ -33,10 +33,9 @@ class SourceFile implements \Iterator
     private $settings;
 
     /**
-     * @var Spreadsheet
+     * @var Workbook
      */
-    private $spreadsheet;
-
+    private $workbook;
 
     private $worksheetIterator;
 
@@ -55,16 +54,16 @@ class SourceFile implements \Iterator
     }
 
     public function getWorksheetIterator() {
-        if (!isset($this->spreadsheet)) {
+        if (!isset($this->workbook)) {
             $filename = $this->file->getPathname();
             $this->fileType = IOFactory::identify($filename);
             $this->reader = IOFactory::createReader($this->fileType);
             if ($this->fileType == "Csv" && !empty($this->settings->delimiter)) {
                 $this->reader->setDelimiter($this->settings->delimiter);
             }
-            $this->spreadsheet = $this->reader->load($filename);
+            $this->workbook = $this->reader->load($filename);
         }
-        return $this->spreadsheet->getWorksheetIterator();
+        return $this->workbook->getWorksheetIterator();
     }
 
     /**
@@ -72,12 +71,22 @@ class SourceFile implements \Iterator
      */
     public function current()
     {
-        $sourceSheet = new SourceSheet($this->worksheetIterator->current(), $this->settings);
+        $worksheet = $this->worksheetIterator->current();
+        if ($this->shouldSkipSheet($worksheet) ) {
+            $this->next();
+            $worksheet = $this->worksheetIterator->current();
+        }
+
+        $sourceSheet = new SourceSheet($worksheet, $this->settings);
         $sourceSheet->setFileType($this->fileType);
-        if ($this->spreadsheet->getSheetCount() == 1) {
+        if ($this->workbook->getSheetCount() == 1) {
             $sourceSheet->setTableName($this->file->getBasename("." . $this->file->getExtension()));
         }
         return $sourceSheet;
+    }
+
+    private function shouldSkipSheet($worksheet) {
+        return $this->settings->skipper == substr($worksheet->getTitle(), 0, strlen($this->settings->skipper));
     }
 
     /**
@@ -89,7 +98,7 @@ class SourceFile implements \Iterator
         if (! $this->valid() ) return;
         $worksheet = $this->worksheetIterator->current();
         // If this worksheet is marked for skipping, recursively call this function for the next sheet
-        if( $this->settings->skipper == substr($worksheet->getTitle(), 0, strlen($this->settings->skipper)) ) $this->next();
+        if( $this->shouldSkipSheet($worksheet) ) $this->next();
     }
 
     /**

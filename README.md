@@ -675,6 +675,8 @@ This can be used after seeding to further process tables - for example to reset 
 Laravel Excel Seeder is open-sourced software licensed under the MIT license.
 
 ## Changes
+#### 2.1.4
+- Fix bug where worksheet prefixed with skipper string was not skipped if it was the first worksheet in the workbook
 #### 2.1.3
 - Parameterize text table output to achieve different text table presentations
 - Fix markdown issue where some tables with empty columns would not be rendered unless the outside column '|' symbols were present
