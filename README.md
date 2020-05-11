@@ -447,7 +447,7 @@ Default: `UTF-8`;
 - If the entire row consists of empty cells, the row is skipped.  To intentionally insert a null row, put the string value 'null' in each cell
 
 ## Examples
-#### Table with specified timestamps and specificied table name
+#### Table with specified timestamps and specified table name
 Use a specific timestamp for 'created_at' and 'updated_at' and also
 give the seeder a specific table name instead of using the CSV filename;
 
