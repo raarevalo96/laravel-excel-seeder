@@ -84,7 +84,6 @@ class SpreadsheetSeederMediator
     }
 
     public function seed() {
-        $this->openTextOutputFile();
         foreach ($this->sourceFile as $this->sourceSheet) {
             $this->checkTable();
             $this->processRows();
@@ -134,22 +133,30 @@ class SpreadsheetSeederMediator
     }
 
     private function openTextOutputFile() {
-        $filename = '';
+        $pathname = '';
         $path_parts = pathinfo($this->sourceFile->getPathname());
-        if (strlen($path_parts['dirname']) > 0 ) $filename = $path_parts['dirname'] . '/';
-        $filename = $filename . $path_parts['filename'] . '.' . $this->settings->textOutputFileExtension;
-        
+        if (strlen($path_parts['dirname']) > 0 ) $pathname = $path_parts['dirname'] . '/';
+        $pathname = $pathname . $path_parts['filename'];
+
+        $mkdirResult = false;
+        if (!(is_dir($pathname))) {
+            $mkdirResult = mkdir($pathname, 0777, true);
+        }
+
+        $filename = $pathname . '/' . $this->sourceSheet->getTableName() . '.' . $this->settings->textOutputFileExtension;
+
         $this->textOutputFile = new \SplFileObject($filename, 'w');
     }
 
     private function writeTextOutputTable() {
+        $textOutputFile = $this->openTextOutputFile();
         $table = new TextOutputTable($this->textOutputFile,
-            $this->sourceSheet->getTableName(), 
+            $this->sourceSheet->getTableName(),
             $this->sourceSheet->getHeader()->rawColumns(),
             $this->rawRows
         );
         $table->write();
-        
+
         $this->rawRows = [];
     }
 

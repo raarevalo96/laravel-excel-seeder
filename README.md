@@ -100,8 +100,9 @@ class UsersTableSeeder extends SpreadsheetSeeder
 }
 ```
 ## Excel Text Markdown Output for Branch Diffs
-After running the database seeder, a text output file will be created
-for each input file using the same name as the input file with a "md"
+After running the database seeder, a subdirectory will be created using  
+the same name as the input file.  A text output file will be created
+for each worksheet using the worksheet name with an "md"
 extension.  This text file contains a markdown text representation of each
 worksheet (tab) in the workbook and can be used to determine
 changes in the XLSX when merging branches from other contributors.
@@ -447,7 +448,7 @@ Default: `UTF-8`;
 - If the entire row consists of empty cells, the row is skipped.  To intentionally insert a null row, put the string value 'null' in each cell
 
 ## Examples
-#### Table with specified timestamps and specified table name
+#### Table with specified timestamps and specificied table name
 Use a specific timestamp for 'created_at' and 'updated_at' and also
 give the seeder a specific table name instead of using the CSV filename;
 
@@ -675,6 +676,8 @@ This can be used after seeding to further process tables - for example to reset 
 Laravel Excel Seeder is open-sourced software licensed under the MIT license.
 
 ## Changes
+#### 2.1.5
+- Change method for text output markdown files.   Create a directory with a separate markdown per sheet instead of one long file.
 #### 2.1.4
 - Fix bug where worksheet prefixed with skipper string was not skipped if it was the first worksheet in the workbook
 #### 2.1.3
