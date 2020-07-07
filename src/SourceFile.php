@@ -47,6 +47,12 @@ class SourceFile implements \Iterator
         if (!$this->shouldSkip()) $this->worksheetIterator = $this->getWorksheetIterator();
     }
 
+    /**
+     * Returns true if the file should be skipped.   Currently this only checks for a leading "~" character in the
+     * filename, which indicates that the file is an Excel temporary file.
+     *
+     * @return bool
+     */
     public function shouldSkip() {
         if (substr($this->file->getFilename(), 0, 1) === "~" ) return true;
 

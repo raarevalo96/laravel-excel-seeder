@@ -340,6 +340,6 @@ class SpreadsheetSeederSettings
             self::$instance = new static();
         }
 
-        return $self::instance;
+        return self::$instance;
     }
 }

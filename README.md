@@ -676,6 +676,10 @@ This can be used after seeding to further process tables - for example to reset 
 Laravel Excel Seeder is open-sourced software licensed under the MIT license.
 
 ## Changes
+#### 2.1.6
+- Fix tablename setting not being used #5 (contributed by @MeowKim)
+- Add setting to disable text output (default true) (contributed by @MeowKim)
+- Update 
 #### 2.1.5
 - Change method for text output markdown files.   Create a directory with a separate markdown per sheet instead of one long file.
 #### 2.1.4
