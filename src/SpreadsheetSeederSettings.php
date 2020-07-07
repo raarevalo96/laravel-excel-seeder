@@ -305,6 +305,18 @@ class SpreadsheetSeederSettings
 
     /*
     |--------------------------------------------------------------------------
+    | Text Output
+    |--------------------------------------------------------------------------
+    |
+    | Toggle the extension for text output table.
+    |
+    | Default: "true";
+    |
+    */
+    public $textOutput = true;
+
+    /*
+    |--------------------------------------------------------------------------
     | Text Output Table Extension
     |--------------------------------------------------------------------------
     |
@@ -322,7 +334,8 @@ class SpreadsheetSeederSettings
 
     private static $instance = null;
 
-    public static function getInstance() {
+    public static function getInstance()
+    {
         if (self::$instance == null) {
             self::$instance = new static();
         }
