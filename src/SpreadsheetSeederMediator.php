@@ -72,7 +72,7 @@ class SpreadsheetSeederMediator
     {
         $fileIterator = new FileIterator();
         if (!$fileIterator->count()) {
-            $this->seeder->console( 'No spreadsheet file given', 'error' );
+            $this->seeder->console('No spreadsheet file given', 'error');
             return;
         }
 
@@ -83,7 +83,8 @@ class SpreadsheetSeederMediator
         $this->seeder->tablesSeeded = $this->tablesSeeded;
     }
 
-    public function seed() {
+    public function seed()
+    {
         foreach ($this->sourceFile as $this->sourceSheet) {
             $this->checkTable();
             $this->processRows();
@@ -93,18 +94,20 @@ class SpreadsheetSeederMediator
         }
     }
 
-    private function checkColumns() {
+    private function checkColumns()
+    {
         if ($this->sourceSheet->isCsv() && count($this->sourceSheet->getHeader()->toArray()) == 1)
-            $this->seeder->console( 'Found only one column in header.  Maybe the delimiter set for the CSV is incorrect: ['.$this->sourceFile->getDelimiter().']' );
+            $this->seeder->console('Found only one column in header.  Maybe the delimiter set for the CSV is incorrect: [' . $this->sourceFile->getDelimiter() . ']');
     }
 
-    private function checkTable() {
-        $tableName = $this->sourceSheet->getTableName();
+    private function checkTable()
+    {
+        $tableName = $this->settings->tablename ?? $this->sourceSheet->getTableName();
         $this->seedTable = new DestinationTable($tableName, $this->settings);
 
 
-        if (! $this->seedTable->exists()) {
-            $this->seeder->console( 'Table "'.$tableName.'" could not be found in database', 'error' );
+        if (!$this->seedTable->exists()) {
+            $this->seeder->console('Table "' . $tableName . '" could not be found in database', 'error');
             return;
         }
 
@@ -118,11 +121,10 @@ class SpreadsheetSeederMediator
      */
     private function processRows()
     {
-        foreach($this->sourceSheet as $row)
-        {
+        foreach ($this->sourceSheet as $row) {
             $this->total++;
 
-            if( ! $row->isValid() ) continue;
+            if (!$row->isValid()) continue;
 
             $this->rows[] = $row->toArray();
             $this->rawRows[] = $row->rawRow();
@@ -132,10 +134,11 @@ class SpreadsheetSeederMediator
         }
     }
 
-    private function openTextOutputFile() {
+    private function openTextOutputFile()
+    {
         $pathname = '';
         $path_parts = pathinfo($this->sourceFile->getPathname());
-        if (strlen($path_parts['dirname']) > 0 ) $pathname = $path_parts['dirname'] . '/';
+        if (strlen($path_parts['dirname']) > 0) $pathname = $path_parts['dirname'] . '/';
         $pathname = $pathname . $path_parts['filename'];
 
         $mkdirResult = false;
@@ -148,9 +151,11 @@ class SpreadsheetSeederMediator
         $this->textOutputFile = new \SplFileObject($filename, 'w');
     }
 
-    private function writeTextOutputTable() {
+    private function writeTextOutputTable()
+    {
         $textOutputFile = $this->openTextOutputFile();
-        $table = new TextOutputTable($this->textOutputFile,
+        $table = new TextOutputTable(
+            $this->textOutputFile,
             $this->sourceSheet->getTableName(),
             $this->sourceSheet->getHeader()->rawColumns(),
             $this->rawRows
@@ -167,19 +172,16 @@ class SpreadsheetSeederMediator
      */
     private function insertRows()
     {
-        if( empty($this->rows) ) return;
+        if (empty($this->rows)) return;
 
-        try
-        {
+        try {
             $this->seedTable->insertRows($this->rows);
 
             $this->rows = [];
 
             $this->count = 0;
-        }
-        catch (\Exception $e)
-        {
-            $this->seeder->console('Rows of the file "'.$this->sourceFile->getFilename().'" sheet "'.$this->sourceSheet->getTitle().'" has failed to insert in table "'.$this->seedTable->getName().'": ' . $e->getMessage(), 'error' );
+        } catch (\Exception $e) {
+            $this->seeder->console('Rows of the file "' . $this->sourceFile->getFilename() . '" sheet "' . $this->sourceSheet->getTitle() . '" has failed to insert in table "' . $this->seedTable->getName() . '": ' . $e->getMessage(), 'error');
 
             die();
         }
@@ -192,7 +194,7 @@ class SpreadsheetSeederMediator
      */
     private function outputResults()
     {
-        $this->seeder->console( $this->resultCount.' of '.$this->total.' rows has been seeded in table "'.$this->seedTable->getName().'"' );
+        $this->seeder->console($this->resultCount . ' of ' . $this->total . ' rows has been seeded in table "' . $this->seedTable->getName() . '"');
         $this->total = 0;
         $this->resultCount = 0;
     }
