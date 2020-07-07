@@ -99,7 +99,7 @@ class SpreadsheetSeederMediator
     }
 
     private function checkTable() {
-        $tableName = $this->sourceSheet->getTableName();
+        $tableName = isset($this->settings->tablename) ? $this->settings->tablename : $this->sourceSheet->getTableName();
         $this->seedTable = new DestinationTable($tableName, $this->settings);
 
 
