@@ -153,6 +153,10 @@ class SpreadsheetSeederMediator
 
     private function writeTextOutputTable()
     {
+        if (!$this->settings->textOutput) {
+            return;
+        }
+
         $textOutputFile = $this->openTextOutputFile();
         $table = new TextOutputTable(
             $this->textOutputFile,
