@@ -73,7 +73,18 @@ class DestinationTable
     private function loadColumns() {
         if (! isset($this->columns)) {
             $this->columns = DB::getSchemaBuilder()->getColumnListing( $this->name );
-            $this->doctrineColumns = DB::getSchemaBuilder()->getConnection()->getDoctrineSchemaManager()->listTableColumns($this->name);
+            $doctrineColumns = DB::getSchemaBuilder()->getConnection()->getDoctrineSchemaManager()->listTableColumns($this->name);
+
+            /*
+             * Doctrine DBAL 2.11.x-dev does not return the column name as an index in the case of mixed case (or uppercase?) column names
+             * In sqlite in-memory database, DBAL->listTableColumns() uses the lowercase version of the column name as a column index
+             * In postgres, it uses the lowercase version of the mixed-case column name and places '"' around the name (for the mixed-case name only)
+             * The solution here is to iterate through the columns to retrieve the column name and use that to build a new index.
+             */
+            $this->doctrineColumns = [];
+            foreach ($doctrineColumns as $column) {
+                $this->doctrineColumns[$column->getName()] = $column;
+            }
         }
     }
 
