@@ -52,9 +52,14 @@ class DestinationTable
 
     public function exists() {
         if (isset($this->exists)) return $this->exists;
-        $this->exists =  DB::getSchemaBuilder()->hasTable( $this->name );
+        $this->exists =  self::tableExists( $this->name );
 
         return $this->exists;
+    }
+
+    public static function tableExists($name)
+    {
+        return DB::getSchemaBuilder()->hasTable( $name );
     }
 
     public function truncate( $foreignKeys = TRUE ) {

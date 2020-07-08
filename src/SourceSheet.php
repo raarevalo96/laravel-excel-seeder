@@ -148,4 +148,12 @@ class SourceSheet implements \Iterator
     public function getTitle() {
         return $this->worksheet->getTitle();
     }
+
+    public function isUnnamed() {
+        return $this->isCsv() || preg_match('/^Sheet[0-9]+$/', $this->getTitle());
+    }
+
+    public function titleIsTable() {
+        return DestinationTable::tableExists($this->getTitle());
+    }
 }

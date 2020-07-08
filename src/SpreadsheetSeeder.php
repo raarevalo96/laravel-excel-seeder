@@ -58,4 +58,8 @@ class SpreadsheetSeeder extends Seeder
 
         $this->command->line( '<comment>SpreadsheetSeeder: </comment>'.$message );
     }
+
+    public function command() {
+        return $this->command;
+    }
 }

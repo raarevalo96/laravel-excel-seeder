@@ -114,6 +114,8 @@ You will have to merge the XLSX spreadsheet manually.
 
 The file extension can be changed by setting the `textOutputFileExtension` setting.
 
+TextOutput can be disabled by setting `textOutput` to `FALSE`
+
 ## Configuration
 ### Data Source File
 
@@ -193,8 +195,10 @@ class UsersTableSeeder extends SpreadsheetSeeder
 
 Backward compatibility to laravel-csv-seeder
 
-Table name to insert into in the database.  If this is not set then it
-uses the name of the current CSV filename
+Table name to insert into in the database.  If this is not set then
+the tablename is automatically resolved by the following rules:
+- if there is only 1 worksheet in a file and the worksheet is not the name of a table, use the base filename
+- otherwise use worksheet name
 
 Use worksheetTableMapping instead to map worksheet names to alternative
 table names
@@ -438,7 +442,14 @@ See [https://www.php.net/manual/en/mbstring.supported-encodings.php](https://www
 
 This value is used as the "to_encoding" parameter to mb_convert_encoding.
 
-Default: `UTF-8`;
+Default: `UTF-8`
+
+### Text Output
+`$textOutput` *(boolean)*
+
+Set to false to disable output of textual markdown tables.
+
+Default: `TRUE`
 
 ## Details
 #### Null values
@@ -676,6 +687,11 @@ This can be used after seeding to further process tables - for example to reset 
 Laravel Excel Seeder is open-sourced software licensed under the MIT license.
 
 ## Changes
+#### dev-master
+- Added initial unit test cases for testing this package
+- Refined auto-resolving of table name:
+  - if there is only 1 worksheet in a file and the worksheet is not the name of a table, use the base filename
+  - otherwise use worksheet name
 #### 2.1.6
 - Fix tablename setting not being used #5 (contributed by @MeowKim)
 - Add setting to disable text output (default true) (contributed by @MeowKim)
