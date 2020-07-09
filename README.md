@@ -692,6 +692,7 @@ Laravel Excel Seeder is open-sourced software licensed under the MIT license.
 - Refined auto-resolving of table name:
   - if there is only 1 worksheet in a file and the worksheet is not the name of a table, use the base filename
   - otherwise use worksheet name
+- Implemented fix for issue in DBAL library that occurs when columns have upper case characters
 #### 2.1.6
 - Fix tablename setting not being used #5 (contributed by @MeowKim)
 - Add setting to disable text output (default enabled) (contributed by @MeowKim)
