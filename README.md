@@ -687,7 +687,7 @@ This can be used after seeding to further process tables - for example to reset 
 Laravel Excel Seeder is open-sourced software licensed under the MIT license.
 
 ## Changes
-#### dev-master
+#### 2.1.7
 - Added initial unit test cases for testing this package
 - Refined auto-resolving of table name:
   - if there is only 1 worksheet in a file and the worksheet is not the name of a table, use the base filename
