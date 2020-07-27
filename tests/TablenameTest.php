@@ -81,27 +81,35 @@ class TablenameTest extends TestCase
 
         $customer = \DB::table('customers')->where('id', '=', 103)->first();
         $this->assertEquals('Schmitt', $customer->contact_last_name);
+        $this->assertEquals(122, \DB::table('customers')->count());
 
         $employee = \DB::table('employees')->where('id', 1216)->first();
         $this->assertEquals('Patterson', $employee->last_name);
+        $this->assertEquals(23, \DB::table('employees')->count());
 
         $offices = \DB::table('offices')->where('id', 4)->first();
         $this->assertEquals('Paris', $offices->city);
+        $this->assertEquals(7, \DB::table('offices')->count());
 
         $orderDetail = \DB::table('order_details')->where('id', 470)->first();
         $this->assertEquals('S24_2840', $orderDetail->product_code);
+        $this->assertEquals(2996, \DB::table('order_details')->count());
 
         $order = \DB::table('orders')->where('id', 10367)->first();
         $this->assertEquals(205, $order->customer_id);
+        $this->assertEquals(326, \DB::table('orders')->count());
 
         $payment = \DB::table('payments')->where('id', 18)->first();
         $this->assertEquals(101244.59, $payment->amount);
+        $this->assertEquals(273, \DB::table('payments')->count());
 
         $product_line = \DB::table('product_lines')->where('id', 7)->first();
         $this->assertEquals('Vintage Cars', $product_line->product_line);
+        $this->assertEquals(7, \DB::table('product_lines')->count());
 
         $product = \DB::table('products')->where('id', 85)->first();
         $this->assertEquals("1980's GM Manhattan Express", $product->name);
+        $this->assertEquals(110, \DB::table('products')->count());
     }
 
     /**

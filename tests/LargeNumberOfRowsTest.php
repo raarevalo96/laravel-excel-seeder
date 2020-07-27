@@ -91,6 +91,7 @@ class LargeNumberOfRowsTest extends TestCase
         $fake = \DB::table('fake_names')->where('id', '=', 15000)->first();
         $this->assertEquals('Culver', $fake->Surname);
         $this->assertEquals('Alicia', $fake->GivenName);
+        $this->assertEquals(15000, \DB::table('fake_names')->count());
     }
 
     /**
@@ -98,6 +99,9 @@ class LargeNumberOfRowsTest extends TestCase
      *
      * Seed excel file with 100k rows and verify that last entry is accurate
      *
+     * current status Jul 26, 2020:
+     * Fails.  See issue #1 https://github.com/bfinlay/laravel-excel-seeder/issues/1
+     * `PHP Fatal error:  Allowed memory size of 3221225472 bytes exhausted (tried to allocate 268435464 bytes) in /Users/brion/Sync/laravel-excel-seeder/vendor/phpoffice/phpspreadsheet/src/PhpSpreadsheet/Collection/Cells.php on line 142`
      */
     public function test_100k_xlsx_rows()
     {
@@ -107,6 +111,7 @@ class LargeNumberOfRowsTest extends TestCase
         $fake = \DB::table('fake_names')->where('id', '=', 100000)->first();
         $this->assertEquals('Riedel', $fake->Surname);
         $this->assertEquals('Robert', $fake->GivenName);
+        $this->assertEquals(100000, \DB::table('fake_names')->count());
     }
 
 }

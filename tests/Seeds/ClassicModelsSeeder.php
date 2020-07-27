@@ -12,6 +12,7 @@ class ClassicModelsSeeder extends SpreadsheetSeeder
         // path is relative to base_path which is laravel-excel-seeder/vendor/orchestra/testbench-core/laravel
         $this->file = '/../../../../examples/classicmodels.xlsx';
         $this->textOutput = false;
+        $this->batchInsertSize = 10;
         parent::run();
     }
 }

@@ -332,6 +332,19 @@ class SpreadsheetSeederSettings
     */
     public $textOutputFileExtension = "md";
 
+    /*
+    |--------------------------------------------------------------------------
+    | Batch Insert Size
+    |--------------------------------------------------------------------------
+    |
+    | Number of rows to insert per batch
+    |
+    |
+    | Default: 1000;
+    |
+    */
+    public $batchInsertSize = 1000;
+
     private static $instance = null;
 
     public static function getInstance()

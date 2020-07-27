@@ -451,6 +451,13 @@ Set to false to disable output of textual markdown tables.
 
 Default: `TRUE`
 
+### Batch Insert Size
+`$batchInsertSize` *(integer)*
+
+Number of rows to insert in a batch.
+
+Default: `1000`
+
 ## Details
 #### Null values
 - String conversions: 'null' is converted to `NULL`, 'true' is converted to `TRUE`, 'false' is converted to `FALSE`
@@ -687,6 +694,9 @@ This can be used after seeding to further process tables - for example to reset 
 Laravel Excel Seeder is open-sourced software licensed under the MIT license.
 
 ## Changes
+#### dev-master
+- Added batchInsertSize setting to control batch size of insertions.  Default 1000 rows.
+  - This will address `SQLSTATE[HY000]: General error: 7 number of parameters must be between 0 and 65535`
 #### 2.1.7
 - Added initial unit test cases for testing this package
 - Refined auto-resolving of table name:

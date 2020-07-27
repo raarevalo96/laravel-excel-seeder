@@ -128,7 +128,14 @@ class DestinationTable
 
         $this->checkRows($rows);
 
-        DB::table( $this->name )->insert( $this->rows );
+        $offset = 0;
+        while ($offset < count($this->rows)) {
+            $batchRows = array_slice($this->rows, $offset, $this->settings->batchInsertSize);
+
+            DB::table($this->name)->insert($batchRows);
+
+            $offset += $this->settings->batchInsertSize;
+        }
     }
 
     public function defaultValue($column) {
