@@ -4,9 +4,11 @@
 namespace bfinlay\SpreadsheetSeeder;
 
 
+use bfinlay\SpreadsheetSeeder\SourceFileReadFilter;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\BaseReader;
 use PhpOffice\PhpSpreadsheet\Reader\Csv;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use SplFileInfo;
 
@@ -33,6 +35,16 @@ class SourceFile implements \Iterator
     private $settings;
 
     /**
+     * @var string[]
+     */
+    private $sheetNames;
+
+    /**
+     * @var int
+     */
+    private $sheetIndex = 0;
+
+    /**
      * @var Workbook
      */
     private $workbook;
@@ -44,7 +56,7 @@ class SourceFile implements \Iterator
         $this->file = $file;
         $this->settings = resolve(SpreadsheetSeederSettings::class);
 
-        if (!$this->shouldSkip()) $this->worksheetIterator = $this->getWorksheetIterator();
+        if (!$this->shouldSkip()) $this->getSheetNames();
     }
 
     /**
@@ -59,17 +71,44 @@ class SourceFile implements \Iterator
         return false;
     }
 
-    public function getWorksheetIterator() {
-        if (!isset($this->workbook)) {
+    public function getSheetNames() {
+        if (!isset($this->sheetNames)) {
             $filename = $this->file->getPathname();
             $this->fileType = IOFactory::identify($filename);
             $this->reader = IOFactory::createReader($this->fileType);
             if ($this->fileType == "Csv" && !empty($this->settings->delimiter)) {
                 $this->reader->setDelimiter($this->settings->delimiter);
             }
-            $this->workbook = $this->reader->load($filename);
+
+            // fastest
+            if (method_exists($this->reader, "listWorksheetNames")) {
+                $this->sheetNames = $this->reader->listWorksheetNames($filename);
+            }
+            // slower
+            else if (method_exists($this->reader, "listWorksheetInfo")) {
+                /**
+                 * worksheet info array:
+                 * fake_names_100k.xlsx
+                 * - worksheetName = "fake_names_100k"
+                 * - lastColumnLetter = "AS"
+                 * - lastCoumnIndex = 44
+                 * - totalRows = "100001"
+                 * - totalColumns = 45
+                 */
+                $this->sheetNames = [];
+                $worksheetInfo = $this->reader->listWorksheetInfo($filename);
+                foreach ($worksheetInfo as $info) {
+                    $this->sheetNames[] = $info['worksheetName'];
+                }
+            }
+            // slowest
+            else {
+                $this->reader->setReadFilter(new SourceFileReadFilter());
+                $workbook = $this->reader->load($filename);
+                $this->sheetNames = $workbook->getSheetNames();
+            }
         }
-        return $this->workbook->getWorksheetIterator();
+        return $this->sheetNames;
     }
 
     /**
@@ -77,22 +116,22 @@ class SourceFile implements \Iterator
      */
     public function current()
     {
-        $worksheet = $this->worksheetIterator->current();
-        if ($this->shouldSkipSheet($worksheet) ) {
+        $sheetName = $this->sheetNames[$this->sheetIndex];
+        if ($this->shouldSkipSheet($sheetName) ) {
             $this->next();
-            $worksheet = $this->worksheetIterator->current();
+            $sheetName = $this->sheetNames[$this->sheetIndex];
         }
 
-        $sourceSheet = new SourceSheet($worksheet, $this->settings);
-        $sourceSheet->setFileType($this->fileType);
-        if ($this->workbook->getSheetCount() == 1 && !$sourceSheet->titleIsTable()) {
-            $sourceSheet->setTableName($this->file->getBasename("." . $this->file->getExtension()));
-        }
+        $sourceSheet = new SourceSheet($this->file->getPathname(), $this->fileType, $sheetName);
+        // TODO move to SourceSheet
+//        if ($this->workbook->getSheetCount() == 1 && !$sourceSheet->titleIsTable()) {
+//            $sourceSheet->setTableName($this->file->getBasename("." . $this->file->getExtension()));
+//        }
         return $sourceSheet;
     }
 
-    private function shouldSkipSheet($worksheet) {
-        return $this->settings->skipper == substr($worksheet->getTitle(), 0, strlen($this->settings->skipper));
+    private function shouldSkipSheet($sheetName) {
+        return $this->settings->skipper == substr($sheetName, 0, strlen($this->settings->skipper));
     }
 
     /**
@@ -100,11 +139,10 @@ class SourceFile implements \Iterator
      */
     public function next()
     {
-        $this->worksheetIterator->next();
+        $this->sheetIndex++;
         if (! $this->valid() ) return;
-        $worksheet = $this->worksheetIterator->current();
         // If this worksheet is marked for skipping, recursively call this function for the next sheet
-        if( $this->shouldSkipSheet($worksheet) ) $this->next();
+        if( $this->shouldSkipSheet($this->sheetNames[$this->sheetIndex]) ) $this->next();
     }
 
     /**
@@ -112,7 +150,7 @@ class SourceFile implements \Iterator
      */
     public function key()
     {
-        return $this->worksheetIterator->key();
+        return $this->sheetIndex;
     }
 
     /**
@@ -120,7 +158,7 @@ class SourceFile implements \Iterator
      */
     public function valid()
     {
-        return $this->worksheetIterator->valid();
+        return $this->sheetIndex < count($this->sheetNames);
     }
 
     /**
@@ -128,7 +166,7 @@ class SourceFile implements \Iterator
      */
     public function rewind()
     {
-        return $this->worksheetIterator->rewind();
+        return $this->sheetIndex = 0;
     }
 
     public function getFilename() {
