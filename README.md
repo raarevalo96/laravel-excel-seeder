@@ -348,7 +348,7 @@ worksheets that are processed.  All columns with the specified name in all files
 or worksheets will have hashing applied.  To apply differently to
 different files, process files with separate Seeder instances.
 
-Example: `['password', 'salt']`
+Example: `['password']`
 
 Default: `[]`
 
@@ -456,7 +456,14 @@ Default: `TRUE`
 
 Number of rows to insert in a batch.
 
-Default: `1000`
+Default: `5000`
+
+### Read Chunk Size
+`$readChunkSize` *(integer)*
+
+Number of rows to read per chunk.
+
+Default: `5000`
 
 ## Details
 #### Null values
@@ -642,7 +649,7 @@ class UsersTableSeeder extends SpreadsheetSeeder
     public function run()
     {
         $this->file = '/database/seeds/users.xlsx';
-        $this->hashable = ['password', 'salt'];
+        $this->hashable = ['password'];
         
         parent::run();
     }
@@ -694,9 +701,11 @@ This can be used after seeding to further process tables - for example to reset 
 Laravel Excel Seeder is open-sourced software licensed under the MIT license.
 
 ## Changes
-#### dev-master
-- Added batchInsertSize setting to control batch size of insertions.  Default 1000 rows.
+#### 2.1.8
+- Added batchInsertSize setting to control batch size of insertions.  Default 5000 rows.
   - This will address `SQLSTATE[HY000]: General error: 7 number of parameters must be between 0 and 65535`
+- Added chunked reading to read spreadsheet in chunks to conserve memory.  Default 5000 rows.
+  - This will address out of memory errors when reading large worksheets
 #### 2.1.7
 - Added initial unit test cases for testing this package
 - Refined auto-resolving of table name:
