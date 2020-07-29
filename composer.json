@@ -18,7 +18,7 @@
 	},
 	"require-dev": {
 		"orchestra/testbench": "*",
-		"bfinlay/laravel-excel-seeder-test-data": "*"
+		"bfinlay/laravel-excel-seeder-test-data": "2.1.9"
 	},
 	"autoload": {
 		"psr-4": {

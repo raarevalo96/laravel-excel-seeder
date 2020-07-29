@@ -701,6 +701,14 @@ This can be used after seeding to further process tables - for example to reset 
 Laravel Excel Seeder is open-sourced software licensed under the MIT license.
 
 ## Changes
+#### 2.1.9
+- Fix bug: v2.1.8 table name is not determine properly when worksheet name is mapped
+- Markdown output: save formulas and comments outside (to the right) of region defined by header columns
+- Testing
+  - Add test for table name determination when worksheet names are mapped
+  - Refactor test namespaces to correspond to test names
+  - Move test-specific example data to laravel-excel-seeder-test-data
+  - Lock laravel-excel-seeder-test-data to specific version so that test data remains in-sync with package
 #### 2.1.8
 - Added batchInsertSize setting to control batch size of insertions.  Default 5000 rows.
   - This will address `SQLSTATE[HY000]: General error: 7 number of parameters must be between 0 and 65535`

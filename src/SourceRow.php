@@ -6,6 +6,7 @@ namespace bfinlay\SpreadsheetSeeder;
 
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use PhpOffice\PhpSpreadsheet\Cell\Cell;
 use PhpOffice\PhpSpreadsheet\Worksheet\Row;
 
 class SourceRow
@@ -69,6 +70,8 @@ class SourceRow
         $nullRow = true;
         $cellIterator = $this->sheetRow->getCellIterator();
         $colIndex = 0;
+
+        /** @var Cell $cell */
         foreach($cellIterator as $cell) {
             if (isset($this->columnNames[$colIndex])) {
                 $value = $cell->getCalculatedValue();
@@ -78,7 +81,7 @@ class SourceRow
                 $this->rowArray[$columnName] = $this->transformValue($columnName, $value);
             }
             else {
-                $this->rawRowArray[$colIndex] = "";
+                $this->rawRowArray[$colIndex] = $cell->getValue();
             }
             $colIndex++;
         }

@@ -3,9 +3,9 @@
 namespace bfinlay\SpreadsheetSeeder\Tests;
 
 use bfinlay\SpreadsheetSeeder\SpreadsheetSeederServiceProvider;
-use bfinlay\SpreadsheetSeeder\Tests\Seeds\FakeNames100kXlsxSeeder;
-use bfinlay\SpreadsheetSeeder\Tests\Seeds\FakeNamesCsvSeeder;
-use bfinlay\SpreadsheetSeeder\Tests\Seeds\FakeNamesXlsxSeeder;
+use bfinlay\SpreadsheetSeeder\Tests\Seeds\LargeNumberOfRowsTest\FakeNames100kXlsxSeeder;
+use bfinlay\SpreadsheetSeeder\Tests\Seeds\LargeNumberOfRowsTest\FakeNamesCsvSeeder;
+use bfinlay\SpreadsheetSeeder\Tests\Seeds\LargeNumberOfRowsTest\FakeNamesXlsxSeeder;
 use Orchestra\Testbench\TestCase;
 
 class LargeNumberOfRowsTest extends TestCase

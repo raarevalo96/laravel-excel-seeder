@@ -1,18 +1,18 @@
 <?php
 
 
-namespace bfinlay\SpreadsheetSeeder\Tests\Seeds;
+namespace bfinlay\SpreadsheetSeeder\Tests\Seeds\TablenameTest;
 
 use bfinlay\SpreadsheetSeeder\SpreadsheetSeeder;
 
-class OfficesSpecifyTablenameSeeder extends SpreadsheetSeeder
+class OfficesSingleNamedSheetSeeder extends SpreadsheetSeeder
 {
     public function run()
     {
         // path is relative to base_path which is laravel-excel-seeder/vendor/orchestra/testbench-core/laravel
-        $this->file = '/../../../../examples/offices-tablename.xlsx';
+        $this->file = '/../../../bfinlay/laravel-excel-seeder-test-data/TablenameTest/offices-named-sheet.xlsx';
+
         $this->textOutput = false;
-        $this->tablename = 'offices';
         parent::run();
     }
 }

@@ -133,6 +133,7 @@ class TextOutputTable
         $this->rows = $rows;
         $this->rowCount += count($rows);
         $this->writeHeader();
+        $this->columnWidthsFromRows();
         $this->writeTableRows();
     }
 
@@ -178,10 +179,14 @@ class TextOutputTable
             $this->columnWidths[$index] = max(strlen($columnName),1);
         }
 
+        $this->columnWidthsFromRows();
+    }
+
+    private function columnWidthsFromRows() {
         if(is_null($this->rows)) return;
         foreach ($this->rows as $row) {
             foreach ($row as $index => $value) {
-                if (strlen($value) > $this->columnWidths[$index])
+                if (!isset($this->columnWidths[$index]) || strlen($value) > $this->columnWidths[$index])
                     $this->columnWidths[$index] = strlen($value);
             }
         }

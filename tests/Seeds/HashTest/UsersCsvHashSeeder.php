@@ -1,17 +1,18 @@
 <?php
 
 
-namespace bfinlay\SpreadsheetSeeder\Tests\Seeds;
+namespace bfinlay\SpreadsheetSeeder\Tests\Seeds\HashTest;
 
 use bfinlay\SpreadsheetSeeder\SpreadsheetSeeder;
 
-class OfficesSingleNamedSheetSeeder extends SpreadsheetSeeder
+class UsersCsvHashSeeder extends SpreadsheetSeeder
 {
     public function run()
     {
         // path is relative to base_path which is laravel-excel-seeder/vendor/orchestra/testbench-core/laravel
-        $this->file = '/../../../../examples/offices-named-sheet.xlsx';
+        $this->file = '/../../../../examples/users.csv';
         $this->textOutput = false;
+        $this->hashable = ['password'];
         parent::run();
     }
 }

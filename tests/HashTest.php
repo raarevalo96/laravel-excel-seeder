@@ -3,7 +3,7 @@
 namespace bfinlay\SpreadsheetSeeder\Tests;
 
 use bfinlay\SpreadsheetSeeder\SpreadsheetSeederServiceProvider;
-use bfinlay\SpreadsheetSeeder\Tests\Seeds\UsersCsvHashSeeder;
+use bfinlay\SpreadsheetSeeder\Tests\Seeds\HashTest\UsersCsvHashSeeder;
 
 use Illuminate\Support\Facades\Hash;
 use Orchestra\Testbench\TestCase;

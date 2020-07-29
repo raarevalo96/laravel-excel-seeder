@@ -4,10 +4,12 @@ namespace bfinlay\SpreadsheetSeeder\Tests;
 
 use bfinlay\SpreadsheetSeeder\SpreadsheetSeederServiceProvider;
 use bfinlay\SpreadsheetSeeder\Tests\Seeds\ClassicModelsSeeder;
-use bfinlay\SpreadsheetSeeder\Tests\Seeds\OfficesSingleNamedSheetSeeder;
-use bfinlay\SpreadsheetSeeder\Tests\Seeds\OfficesSingleUnnamedSheetSeeder;
-use bfinlay\SpreadsheetSeeder\Tests\Seeds\OfficesSpecifyTablenameSeeder;
-use bfinlay\SpreadsheetSeeder\Tests\Seeds\UsersCsvSeeder;
+use bfinlay\SpreadsheetSeeder\Tests\Seeds\TablenameTest\ClassicModelsMultipleMappedNamedSheetSeeder;
+use bfinlay\SpreadsheetSeeder\Tests\Seeds\TablenameTest\OfficesSingleMappedNamedSheetSeeder;
+use bfinlay\SpreadsheetSeeder\Tests\Seeds\TablenameTest\OfficesSingleNamedSheetSeeder;
+use bfinlay\SpreadsheetSeeder\Tests\Seeds\TablenameTest\OfficesSingleUnnamedSheetSeeder;
+use bfinlay\SpreadsheetSeeder\Tests\Seeds\TablenameTest\OfficesSpecifyTablenameSeeder;
+use bfinlay\SpreadsheetSeeder\Tests\Seeds\TablenameTest\UsersCsvSeeder;
 use Orchestra\Testbench\TestCase;
 
 class TablenameTest extends TestCase
@@ -159,4 +161,35 @@ class TablenameTest extends TestCase
         $this->assertEquals('Paris', $offices->city);
         $this->assertEquals(7, \DB::table('offices')->count());
     }
+
+    /**
+     * Seed an XLSX file with a single sheet that is mapped using settings->worksheetTableMapping
+     */
+    public function test_table_name_is_single_mapped_named_sheet()
+    {
+        $this->seed(OfficesSingleMappedNamedSheetSeeder::class);
+
+        $offices = \DB::table('offices')->where('id', 4)->first();
+        $this->assertEquals('Paris', $offices->city);
+        $this->assertEquals(7, \DB::table('offices')->count());
+    }
+
+    /**
+     * Seed an XLSX file with a multiple sheets with two sheets mapped using settings->worksheetTableMapping
+     */
+    public function test_table_name_is_multiple_mapped_named_sheet()
+    {
+        $this->seed(ClassicModelsMultipleMappedNamedSheetSeeder::class);
+
+        $employee = \DB::table('employees')->where('id', 1216)->first();
+        $this->assertEquals('Patterson', $employee->last_name);
+        $this->assertEquals('Steve', $employee->first_name);
+        $this->assertEquals(23, \DB::table('employees')->count());
+
+        $order = \DB::table('orders')->where('id', 10407)->first();
+        $this->assertEquals(450, $order->customer_id);
+        $this->assertEquals('On Hold', $order->status);
+        $this->assertEquals(326, \DB::table('orders')->count());
+    }
+
 }

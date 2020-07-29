@@ -123,10 +123,9 @@ class SourceFile implements \Iterator
         }
 
         $sourceSheet = new SourceSheet($this->file->getPathname(), $this->fileType, $sheetName);
-        // TODO move to SourceSheet
-//        if ($this->workbook->getSheetCount() == 1 && !$sourceSheet->titleIsTable()) {
-//            $sourceSheet->setTableName($this->file->getBasename("." . $this->file->getExtension()));
-//        }
+        if (count($this->sheetNames) == 1) {
+            $sourceSheet->setSingleSheet();
+        }
         return $sourceSheet;
     }
 

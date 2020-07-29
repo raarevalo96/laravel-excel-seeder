@@ -28,6 +28,11 @@ class SourceSheet implements \Iterator
     private $fileType;
 
     /**
+     * @var boolean
+     */
+    private $isSingleSheet = false;
+
+    /**
      * @var BaseReader
      */
     private $reader;
@@ -164,17 +169,16 @@ class SourceSheet implements \Iterator
         if (isset($this->tableName)) {
             return $this->tableName;
         }
-        else if ($this->workbook->getSheetCount() == 1 && !$this->titleIsTable()) {
+        else if (isset($this->settings->worksheetTableMapping[$this->worksheetName])) {
+            $this->tableName = $this->settings->worksheetTableMapping[$this->worksheetName];
+        }
+        else if ($this->isSingleSheet && !$this->titleIsTable()) {
             $this->tableName = pathinfo($this->fileName)["filename"];
         }
         else {
-            $worksheetName = $this->worksheet->getTitle();
-            if (isset($this->settings->worksheetTableMapping[$worksheetName]))
-                $this->tableName = $this->settings->worksheetTableMapping[$worksheetName];
-            else
-                $this->tableName = $worksheetName;
+            $this->tableName = $this->worksheetName;
         }
-        
+
         return $this->tableName;
     }
 
@@ -240,5 +244,13 @@ class SourceSheet implements \Iterator
 
     public function titleIsTable() {
         return DestinationTable::tableExists($this->getTitle());
+    }
+
+    public function setSingleSheet($isSingle = true) {
+        $this->isSingleSheet = $isSingle;
+    }
+
+    public function isSingleSheet() {
+        return $this->isSingleSheet;
     }
 }
