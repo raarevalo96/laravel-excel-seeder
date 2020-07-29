@@ -710,6 +710,7 @@ Laravel Excel Seeder is open-sourced software licensed under the MIT license.
   - Move test-specific example data to laravel-excel-seeder-test-data
   - Lock laravel-excel-seeder-test-data to specific version so that test data remains in-sync with package
 #### 2.1.8
+- Fixed "hashable" setting so that it works per documentation.  Added "hashable" test.
 - Added batchInsertSize setting to control batch size of insertions.  Default 5000 rows.
   - This will address `SQLSTATE[HY000]: General error: 7 number of parameters must be between 0 and 65535`
 - Added chunked reading to read spreadsheet in chunks to conserve memory.  Default 5000 rows.
