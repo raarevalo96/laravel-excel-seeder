@@ -289,6 +289,7 @@ Default: `[]`
 
 ### Limit
 `$limit` *(int*)
+
 Limit the maximum number of rows that will be loaded from a worksheet.
 This is useful in development to keep loading time fast.
 
