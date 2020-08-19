@@ -19,6 +19,17 @@ This project was forked from [laravel-csv-seeder](https://github.com/jeroenzwart
 - Seed default values into table columns.
 - Adjust Laravel's timestamp at seeding.
 
+## Contents
+- [Installation](#installation)
+- [Simplest Usage](#simplest-usage)
+- [Basic Usage](#basic-usage)
+- [Markdown Diffs](#excel-text-markdown-output-for-branch-diffs)
+- [Configuration Settings](#configuration)
+- [Conversion Details](#details)
+- [Examples](#examples)
+- [License](#license)
+- [Changes](#changes)
+
 ## Installation
 - Require this package directly by `composer require --dev bfinlay/laravel-excel-seeder`
 - Or add this package in your composer.json and run `composer update`
