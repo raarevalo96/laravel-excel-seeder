@@ -117,6 +117,109 @@ The file extension can be changed by setting the `textOutputFileExtension` setti
 TextOutput can be disabled by setting `textOutput` to `FALSE`
 
 ## Configuration
+* [Aliases](#column-aliases) - (global) map column names to alternative column names
+* [Batch Insert Size](#batch-insert-size) - number of rows to insert per batch
+* [Defaults](#defaults) - (global) map column names to default values
+* [Delimiter](#delimiter) - specify CSV delimiter (default: auto detect)
+* [Extension](#data-source-file-default-extension) - default file extension when directory is specified (default: xlsx)
+* [Data Source File](#data-source-file) - path or paths of files to process (default: /database/seeds/*.xlsx)
+* [Hashable](#hashable) - (global) array of column names hashed using Hash facade
+* [Header](#header) - (global) skip first row when true (default: true)
+* [Input Encodings](#input-encodings) - (global) array of possible encodings from input data source
+* [Limit](#limit) - (global) limit the maximum number of rows that will be loaded from a worksheet (default: no limit)
+* [Mapping](#column-mapping) - column "mapping"; array of column names to use as a header
+* [Offset](#offset) - (global) number of rows to skip at the start of the data source (default: 0)
+* [Output Encodings](#output-encodings) - (global) output encoding to database
+* [Read Chunk Size](#read-chunk-size) - number of rows to read per chunk
+* [Skipper](#skipper) - (global) prefix string to indicate a column or worksheet should be skipped (default: "%")
+* [Tablename](#destination-table-name) - (legacy) table name to insert into database for single-sheet file
+* [Text Output](#text-output) - enable text markdown output (default: true)
+* [Text Output File Extension](#text-output-file-extension) - extension for text output table
+* [Timestamps](#timestamps) - when true, set the Laravel timestamp columns 'created_at' and 'updated_at' with current date/time (default: true)
+* [Truncate](#truncate-destination-table) - truncate the table before seeding (default: true)
+* [Validate](#validate) - map column names to laravel validation rules
+* [Worksheet Table Mapping](#worksheet-table-mapping) - map names of worksheets to table names
+
+### Column Aliases
+`$aliases` *(array [])*
+
+This is an associative array to map the column names of the data source
+to alternative column names (aliases).
+
+Note: this setting is currently global and applies to all files or
+worksheets that are processed.  All columns with the same name in all files
+or worksheets will have the same alias applied.  To apply differently to
+different files, process files with separate Seeder instances.
+
+Example: `['CSV Header 1' => 'Table Column 1', 'CSV Header 2' => 'Table Column 2']`
+
+Default: `[]`
+
+### Batch Insert Size
+`$batchInsertSize` *(integer)*
+
+Number of rows to insert in a batch.
+
+Default: `5000`
+
+### Defaults
+`$defaults` *(array [])*
+
+This is an associative array mapping column names in the data source to
+default values that will override any values in the datasource.
+
+Note: this setting is currently global and applies to all files or
+worksheets that are processed.  To apply differently to
+different files, process files with separate Seeder instances.
+
+Example: `['created_by' => 'seed', 'updated_by' => 'seed]`
+
+Default: `[]`
+
+### Delimiter
+`$delimiter` *(string NULL)*
+
+The delimiter used in CSV, tab-separate-files, and other text delimited
+files.  When this is not set, the phpspreadsheet library will
+automatically detect the text delimiter
+
+Default: `null`
+
+### Data Source File Default Extension
+`$extension` *(string 'xlsx'*)
+
+The default extension used when a directory is specified in $this->file
+
+Default: `"xlsx"`
+
+```php
+use bfinlay\SpreadsheetSeeder\SpreadsheetSeeder;
+
+class UsersTableSeeder extends SpreadsheetSeeder
+{    
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        // specify relative to Laravel project base path
+        // feature directories specified
+        $this->file = [
+            '/database/seeds/feature1', 
+            '/database/seeds/feature2',
+            '/database/seeds/feature3', 
+            ]; 
+        
+        // process all xlsx and csv files in paths specified above
+        $this->extension = ['xlsx', 'csv'];
+        
+        parent::run();
+    }
+}
+```
+
 ### Data Source File
 
 `$file` *(string*) or *(array []*)
@@ -155,17 +258,47 @@ class UsersTableSeeder extends SpreadsheetSeeder
 }
 ```
 
-### Data Source File Default Extension
-`$extension` *(string 'xlsx'*)
+### Hashable
+`$hashable` *(array ['password'])*
 
-The default extension used when a directory is specified in $this->file
+This is an array of column names in the data source that should be hashed
+using Laravel's `Hash` facade.
 
-Default: `"xlsx"`
+The hashing algorithm is configured in `config/hashing.php` per
+[https://laravel.com/docs/master/hashing](https://laravel.com/docs/master/hashing)
 
+Note: this setting is currently global and applies to all files or
+worksheets that are processed.  All columns with the specified name in all files
+or worksheets will have hashing applied.  To apply differently to
+different files, process files with separate Seeder instances.
+
+Example: `['password']`
+
+Default: `[]`
+
+### Input Encodings
+`$inputEncodings` *(array [])*
+
+Array of possible input encodings from input data source
+See [https://www.php.net/manual/en/mbstring.supported-encodings.php](https://www.php.net/manual/en/mbstring.supported-encodings.php)
+
+This value is used as the "from_encoding" parameter to mb_convert_encoding.
+If this is not specified, the internal encoding is used.
+
+Default: `[]`
+
+### Limit
+`$limit` *(int*)
+Limit the maximum number of rows that will be loaded from a worksheet.
+This is useful in development to keep loading time fast.
+
+This can be used in conjunction with settings in the environment file or App::environment() (APP_ENV) to limit data rows in the development environment.
+
+Example:
 ```php
 use bfinlay\SpreadsheetSeeder\SpreadsheetSeeder;
 
-class UsersTableSeeder extends SpreadsheetSeeder
+class SalesTableSeeder extends SpreadsheetSeeder
 {    
     /**
      * Run the database seeds.
@@ -174,21 +307,78 @@ class UsersTableSeeder extends SpreadsheetSeeder
      */
     public function run()
     {
-        // specify relative to Laravel project base path
-        // feature directories specified
-        $this->file = [
-            '/database/seeds/feature1', 
-            '/database/seeds/feature2',
-            '/database/seeds/feature3', 
-            ]; 
-        
-        // process all xlsx and csv files in paths specified above
-        $this->extension = ['xlsx', 'csv'];
+        $this->file = '/database/seeds/sales.xlsx';
+        if (App::environment('local'))
+            $this->limit = 10000;
         
         parent::run();
     }
 }
 ```
+
+Default: null
+
+
+### Column "Mapping"
+`$mapping` *(array [])*
+
+Backward compatibility to laravel-csv-seeder
+
+This is an array of column names that will be used as headers.
+
+If $this->header is true then the first row of data will be skipped.
+This allows existing headers in a CSV file to be overridden.
+
+This is called "Mapping" because its intended use is to map the fields of
+a CSV file without a header line to the columns of a database table.
+
+Note: this setting is currently global and applies to all files or
+worksheets that are processed.  To apply differently to different files,
+process files with separate Seeder instances.
+
+Example: `['Header Column 1', 'Header Column 2']`
+
+Default: `[]`
+
+### Offset
+`$offset` *(integer)*
+
+Number of rows to skip at the start of the data source, excluding the
+header row.
+
+Default: `0`
+
+### Output Encodings
+`$outputEncoding` *(string)*
+
+Output encoding to database
+See [https://www.php.net/manual/en/mbstring.supported-encodings.php](https://www.php.net/manual/en/mbstring.supported-encodings.php)
+
+This value is used as the "to_encoding" parameter to mb_convert_encoding.
+
+Default: `UTF-8`
+
+### Read Chunk Size
+`$readChunkSize` *(integer)*
+
+Number of rows to read per chunk.
+
+Default: `5000`
+
+### Skipper
+`$skipper` *(string %)*
+
+This is a string used as a prefix to indicate that a column in the data source
+should be skipped.  For Excel workbooks, a worksheet prefixed with
+this string will also be skipped.  The skipper prefix can be a
+multi-character string.
+
+- Example: Data source column `%id_copy` will be skipped with skipper set as `%`
+- Example: Data source column `#id_copy` will be skipped with skipper set as `#`
+- Example: Data source column `[skip]id_copy` will be skipped with skipper set as `[skip]`
+- Example: Worksheet `%worksheet1` will be skipped with skipper set as `%`
+
+Default: `"%"`;
 
 ### Destination Table Name
 `$tablename` *(string*)
@@ -232,6 +422,30 @@ class UsersTableSeeder extends SpreadsheetSeeder
 }
 ```
 
+### Text Output
+`$textOutput` *(boolean)*
+
+Set to false to disable output of textual markdown tables.
+
+Default: `TRUE`
+
+### Text Output Table File Extension
+`$textOutputFileExtension` *(string)*
+
+Extension for textual markdown tables.
+
+Default: `md`
+
+### Timestamps
+`$timestamps` *(string/boolean TRUE)*
+
+When `true`, set the Laravel timestamp columns 'created_at' and 'updated_at'
+with the current date/time.
+
+When `false`, the fields will be set to NULL
+
+Default: `true`
+
 ### Truncate Destination Table
 `$truncate` *(boolean TRUE)*
 
@@ -251,14 +465,29 @@ skip the first row.
 
 Default: `TRUE`
 
-### Delimiter
-`$delimiter` *(string NULL)*
+### Validate
+`$validate` *(array [])*
 
-The delimiter used in CSV, tab-separate-files, and other text delimited
-files.  When this is not set, the phpspreadsheet library will
-automatically detect the text delimiter
+This is an associative array mapping column names in the data source that
+should be validated to a Laravel Validator validation rule.
+The available validation rules are described here:
+[https://laravel.com/docs/master/validation#available-validation-rules](https://laravel.com/docs/master/validation#available-validation-rules)
 
-Default: `null`
+Note: this setting is currently global and applies to all files or
+worksheets that are processed.  All columns with the specified name in all files
+or worksheets will have the validation rule applied.  To apply differently to
+different files, process files with separate Seeder instances.
+
+Example:
+```
+[
+  'email' => 'unique:users,email_address',
+  'start_date' => 'required|date|after:tomorrow',
+  'finish_date' => 'required|date|after:start_date'
+]
+```
+
+Default: `[]`
 
 ### Worksheet Table Mapping
 `$worksheetTableMapping` *(array [])*
@@ -297,173 +526,6 @@ class UsersTableSeeder extends SpreadsheetSeeder
     }
 }
 ```
-
-### Column "Mapping"
-`$mapping` *(array [])*
-
-Backward compatibility to laravel-csv-seeder
-
-This is an array of column names that will be used as headers.
-
-If $this->header is true then the first row of data will be skipped.
-This allows existing headers in a CSV file to be overridden.
-
-This is called "Mapping" because its intended use is to map the fields of
-a CSV file without a header line to the columns of a database table.
-
-Note: this setting is currently global and applies to all files or
-worksheets that are processed.  To apply differently to different files,
-process files with separate Seeder instances.
-
-Example: `['Header Column 1', 'Header Column 2']`
-
-Default: `[]`
-
-### Column Aliases
-`$aliases` *(array [])*
-
-This is an associative array to map the column names of the data source
-to alternative column names (aliases).
-
-Note: this setting is currently global and applies to all files or
-worksheets that are processed.  All columns with the same name in all files
-or worksheets will have the same alias applied.  To apply differently to
-different files, process files with separate Seeder instances.
-
-Example: `['CSV Header 1' => 'Table Column 1', 'CSV Header 2' => 'Table Column 2']`
-
-Default: `[]`
-
-### Hashable
-`$hashable` *(array ['password'])*
-
-This is an array of column names in the data source that should be hashed
-using Laravel's `Hash` facade.
-
-The hashing algorithm is configured in `config/hashing.php` per
-[https://laravel.com/docs/master/hashing](https://laravel.com/docs/master/hashing)
-
-Note: this setting is currently global and applies to all files or
-worksheets that are processed.  All columns with the specified name in all files
-or worksheets will have hashing applied.  To apply differently to
-different files, process files with separate Seeder instances.
-
-Example: `['password']`
-
-Default: `[]`
-
-### Validate
-`$validate` *(array [])*
-
-This is an associative array mapping column names in the data source that
-should be validated to a Laravel Validator validation rule.
-The available validation rules are described here:
-[https://laravel.com/docs/master/validation#available-validation-rules](https://laravel.com/docs/master/validation#available-validation-rules)
-
-Note: this setting is currently global and applies to all files or
-worksheets that are processed.  All columns with the specified name in all files
-or worksheets will have the validation rule applied.  To apply differently to
-different files, process files with separate Seeder instances.
-
-Example:
-```
-[
-  'email' => 'unique:users,email_address',
-  'start_date' => 'required|date|after:tomorrow',
-  'finish_date' => 'required|date|after:start_date'
-]
-```
-
-Default: `[]`
-
-### Defaults
-`$defaults` *(array [])*
-
-This is an associative array mapping column names in the data source to
-default values that will override any values in the datasource.
-
-Note: this setting is currently global and applies to all files or
-worksheets that are processed.  To apply differently to
-different files, process files with separate Seeder instances.
-
-Example: `['created_by' => 'seed', 'updated_by' => 'seed]`
-
-Default: `[]`
-
-### Skipper
-`$skipper` *(string %)*
-
-This is a string used as a prefix to indicate that a column in the data source
-should be skipped.  For Excel workbooks, a worksheet prefixed with
-this string will also be skipped.  The skipper prefix can be a
-multi-character string.
-
-- Example: Data source column `%id_copy` will be skipped with skipper set as `%`
-- Example: Data source column `#id_copy` will be skipped with skipper set as `#`
-- Example: Data source column `[skip]id_copy` will be skipped with skipper set as `[skip]`
-- Example: Worksheet `%worksheet1` will be skipped with skipper set as `%`
-
-Default: `"%"`;
-
-### Timestamps
-`$timestamps` *(string/boolean TRUE)*
-
-When `true`, set the Laravel timestamp columns 'created_at' and 'updated_at'
-with the current date/time.
-
-When `false`, the fields will be set to NULL
-
-Default: `true`
-
-### Offset
-`$offset` *(integer)*
-
-Number of rows to skip at the start of the data source, excluding the
-header row.
-
-Default: `0`
-
-### Input Encodings
-`$inputEncodings` *(array [])*
-
-Array of possible input encodings from input data source
-See [https://www.php.net/manual/en/mbstring.supported-encodings.php](https://www.php.net/manual/en/mbstring.supported-encodings.php)
-
-This value is used as the "from_encoding" parameter to mb_convert_encoding.
-If this is not specified, the internal encoding is used.
-
-Default: `[]`
-
-### Output Encodings
-`$outputEncoding` *(string)*
-
-Output encoding to database
-See [https://www.php.net/manual/en/mbstring.supported-encodings.php](https://www.php.net/manual/en/mbstring.supported-encodings.php)
-
-This value is used as the "to_encoding" parameter to mb_convert_encoding.
-
-Default: `UTF-8`
-
-### Text Output
-`$textOutput` *(boolean)*
-
-Set to false to disable output of textual markdown tables.
-
-Default: `TRUE`
-
-### Batch Insert Size
-`$batchInsertSize` *(integer)*
-
-Number of rows to insert in a batch.
-
-Default: `5000`
-
-### Read Chunk Size
-`$readChunkSize` *(integer)*
-
-Number of rows to read per chunk.
-
-Default: `5000`
 
 ## Details
 #### Null values
@@ -701,6 +763,10 @@ This can be used after seeding to further process tables - for example to reset 
 Laravel Excel Seeder is open-sourced software licensed under the MIT license.
 
 ## Changes
+#### 2.1.10
+- Add `limit` feature
+- Organize documentation
+- Add `limit` test
 #### 2.1.9
 - Fix bug: v2.1.8 table name is not determine properly when worksheet name is mapped
 - Markdown output: save formulas and comments outside (to the right) of region defined by header columns

@@ -109,6 +109,7 @@ class SpreadsheetSeederMediator
                 $this->writeTextOutputTableRows();
 //                unset($this->sourceChunk);
                 SeederHelper::memoryLog(__METHOD__ . '::' . __LINE__ . ' ' . 'processed');
+                if ($this->exceedsLimit()) break;
             }
             $this->writeTextOutputFooter();
             $this->outputResults();
@@ -154,6 +155,8 @@ class SpreadsheetSeederMediator
 
             $this->count++;
             $this->resultCount++;
+
+            if ($this->exceedsLimit()) break;
         }
     }
 
@@ -236,5 +239,10 @@ class SpreadsheetSeederMediator
         $this->seeder->console($this->resultCount . ' of ' . $this->total . ' rows has been seeded in table "' . $this->seedTable->getName() . '"');
         $this->total = 0;
         $this->resultCount = 0;
+    }
+
+    private function exceedsLimit()
+    {
+        return isset($this->settings->limit) && $this->total >= $this->settings->limit;
     }
 }
