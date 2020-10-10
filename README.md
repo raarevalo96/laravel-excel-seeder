@@ -424,7 +424,7 @@ class UsersTableSeeder extends SpreadsheetSeeder
         $this->file = '/database/seeds/autodump01234456789.xlsx';  // note: could alternatively be a csv
         
         // specify the table this is loaded into
-        $this->table = 'sales';
+        $this->tablename = 'sales';
         
         // in this example, table truncation also needs to be disabled so previous sales records are not deleted
         $this->truncate = false;
