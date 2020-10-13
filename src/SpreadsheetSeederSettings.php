@@ -328,6 +328,29 @@ class SpreadsheetSeederSettings
 
     /*
      * --------------------------------------------------------------------------
+     *  Unix Timestamps
+     * --------------------------------------------------------------------------
+     *
+     *  This is an array of column names that contain values that should be
+     *  interpreted unix timestamps rather than excel timestamps.
+     *
+     *  If column mapping is used (see mapping) the column name should match the
+     *  value in the $mapping array instead of the value in the file, if any.
+     *
+     *  Note: this setting is currently global and applies to all files or
+     *  worksheets that are processed.  All columns with the specified name in all files
+     *  or worksheets will be interpreted as unix timestamps.  To apply differently to
+     *  different files, process files with separate Seeder instances.
+     *
+     *  Example: ['start_date', 'finish_date'];
+     *
+     *  Default: []
+     *
+     */
+    public $unixTimestamps = [];
+
+    /*
+     * --------------------------------------------------------------------------
      *  Validate
      * --------------------------------------------------------------------------
      *

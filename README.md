@@ -148,6 +148,7 @@ TextOutput can be disabled by setting `textOutput` to `FALSE`
 * [Text Output File Extension](#text-output-file-extension) - extension for text output table
 * [Timestamps](#timestamps) - when true, set the Laravel timestamp columns 'created_at' and 'updated_at' with current date/time (default: true)
 * [Truncate](#truncate-destination-table) - truncate the table before seeding (default: true)
+* [Unix Timestamps](#unix-timestamps) - interpret date/time values as unix timestamps instead of excel timestamps for specified columns (default: no columns)
 * [Validate](#validate) - map column names to laravel validation rules
 * [Worksheet Table Mapping](#worksheet-table-mapping) - map names of worksheets to table names
 
@@ -286,6 +287,15 @@ different files, process files with separate Seeder instances.
 Example: `['password']`
 
 Default: `[]`
+
+
+### Header
+`$header` *(boolean TRUE)*
+
+If the data source has headers in the first row, setting this to true will
+skip the first row.
+
+Default: `TRUE`
 
 ### Input Encodings
 `$inputEncodings` *(array [])*
@@ -441,7 +451,7 @@ Set to false to disable output of textual markdown tables.
 
 Default: `TRUE`
 
-### Text Output Table File Extension
+### Text Output File Extension
 `$textOutputFileExtension` *(string)*
 
 Extension for textual markdown tables.
@@ -469,13 +479,25 @@ Note: does not currently support array of table names to exclude
 
 See example for [tablename](#destination-table-name) above
 
-### Header
-`$header` *(boolean TRUE)*
+### Unix Timestamps
+`$unixTimestamps` *(array [])*
 
-If the data source has headers in the first row, setting this to true will
-skip the first row.
+This is an array of column names that contain values that should be
+interpreted unix timestamps rather than excel timestamps.
+See [Conversions: Date/Time values](#datetime-values)
 
-Default: `TRUE`
+If column mapping is used (see mapping) the column name should match the
+value in the $mapping array instead of the value in the file, if any.
+
+Note: this setting is currently global and applies to all files or
+worksheets that are processed.  All columns with the specified name in all files
+or worksheets will be interpreted as unix timestamps.  To apply differently to
+different files, process files with separate Seeder instances.
+
+Example: `['start_date', 'finish_date']`;
+
+Default: `[]`
+
 
 ### Validate
 `$validate` *(array [])*
@@ -545,6 +567,12 @@ class UsersTableSeeder extends SpreadsheetSeeder
 - 'null' strings converted to `NULL` are treated as explicit nulls.  They are not subject to implicit conversions to default values. 
 - Empty cells are set to the default value specified in the database table data definition, unless the entire row is empty
 - If the entire row consists of empty cells, the row is skipped.  To intentionally insert a null row, put the string value 'null' in each cell
+
+#### Date/Time values
+When the destination table column is a date/time type, the cell value is converted to a Date/Time format.
+- If the value is numeric, it is assumed to be an excel date value
+- If the value is a string, it is parsed using [Carbon::parse](https://carbon.nesbot.com/docs/#api-instantiation) and formatted for the SQL query.
+- If the value is a unix timestamp, specify the column name with the [Unix Timestamps](#unix-timestamps) setting to convert it as a unix timestamp instead of an excel timestamp.
 
 ## Examples
 #### Table with specified timestamps and specified table name
@@ -775,6 +803,8 @@ This can be used after seeding to further process tables - for example to reset 
 Laravel Excel Seeder is open-sourced software licensed under the MIT license.
 
 ## Changes
+#### 2.1.11
+- improved date support
 #### 2.1.10
 - Add `limit` feature
 - Organize documentation

@@ -4,7 +4,9 @@
 namespace bfinlay\SpreadsheetSeeder;
 
 use Doctrine\DBAL\Schema\Column;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 class DestinationTable
 {
@@ -31,9 +33,9 @@ class DestinationTable
     private $rows;
 
     /**
-     * 
+     *
      * See methods in vendor/doctrine/dbal/lib/Doctrine/DBAL/Schema/Column.php
-     * 
+     *
      * @var Column
      */
     private $doctrineColumns;
@@ -113,11 +115,28 @@ class DestinationTable
         return $value;
     }
 
+    private function transformDateCellValue($columnName, $value) {
+        if ($this->isDateColumn($columnName)) {
+            $date = $value;
+            if (is_numeric($value)) {
+                if (in_array($columnName, $this->settings->unixTimestamps))
+                        $date = Carbon::parse($value);
+                else
+                        $date = Date::excelToDateTimeObject($value);
+            }
+            return Carbon::parse($date)->toDateTimeString();
+        }
+        return $value;
+    }
+
     private function checkRows($rows) {
         foreach ($rows as $row) {
             $tableRow = [];
             foreach ($row as $column => $value) {
-                if ($this->columnExists($column)) $tableRow[$column] = $this->transformNullCellValue($column, $value);
+                if ($this->columnExists($column)) {
+                    $tableRow[$column] = $this->transformNullCellValue($column, $value);
+                    $tableRow[$column] = $this->transformDateCellValue($column, $tableRow[$column]);
+                }
             }
             $this->rows[] = $tableRow;
         }
@@ -139,13 +158,23 @@ class DestinationTable
         $this->rows = [];
     }
 
+    private function isDateColumn($column) {
+        $this->loadColumns();
+
+        $c = $this->doctrineColumns[$column];
+
+        // if column is date or time type return
+        $doctrineDateValues = ['date', 'date_immutable', 'datetime', 'datetime_immutable', 'datetimez', 'datetimez_immutable', 'time', 'time_immutable', 'dateinterval'];
+        return in_array($c->getType()->getName(), $doctrineDateValues);
+    }
+
     public function defaultValue($column) {
         $this->loadColumns();
 
         $c = $this->doctrineColumns[$column];
 
         // return default value for column if set
-        if ($c->getDefault()) return $c->getDefault();
+        if (! is_null($c->getDefault())) return $c->getDefault();
 
         // if column is auto-incrementing return null and let database set the value
         if ($c->getAutoincrement()) return null;
@@ -156,17 +185,16 @@ class DestinationTable
         // if column is numeric, return 0
         $doctrineNumericValues = ['smallint', 'integer', 'bigint', 'decimal', 'float'];
         if (in_array($c->getType()->getName(), $doctrineNumericValues)) return 0;
-        
-        // if column is date or time type return 
-        $doctrineDateValues = ['date', 'date_immutable', 'datetime', 'datetime_immutable', 'datetimez', 'datetimez_immutable', 'time', 'time_immutable', 'dateinterval'];
-        if (in_array($c->getType()->getName(), $doctrineDateValues)) {
+
+        // if column is date or time type return
+        if ($this->isDateColumn($column)) {
             if ($this->settings->timestamps) return date('Y-m-d H:i:s');
             else return 0;
-        } 
-            
+        }
+
         // if column is boolean return false
         if ($c->getType()->getName() == "boolean") return false;
-        
+
         // else return empty string
         return "";
     }
