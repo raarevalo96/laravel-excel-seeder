@@ -35,6 +35,7 @@ class SpreadsheetSeeder extends Seeder
     public function run()
     {
         $this->mediator = new SpreadsheetSeederMediator($this);
+        app()->instance(SpreadsheetSeeder::class, $this);
 
         $this->mediator->run();
     }

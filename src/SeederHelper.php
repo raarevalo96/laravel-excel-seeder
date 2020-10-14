@@ -39,13 +39,21 @@ class SeederHelper
         return round($timeInSeconds, 2).' '.$units[$i];
     }
 
-    public static function memoryLog($message = '') {
-        if (!self::$memoryLogEnabled) return;
-
+    public static function measurements() {
         static $timer = null;
 
         $elapsed_time = isset($timer) ? microtime(true) - $timer : 0;
-        error_log($message . ' ' . self::getHumanReadableSize(memory_get_usage()) . ' ' . self::getHumanReadableTime($elapsed_time));
         $timer = microtime(true);
+        return [
+            "memory" => self::getHumanReadableSize(memory_get_usage()),
+            "time" => self::getHumanReadableTime($elapsed_time)
+        ];
+    }
+
+    public static function memoryLog($message = '') {
+        if (!self::$memoryLogEnabled) return;
+
+        $m = self::measurements();
+        error_log($message . ' ' . $m["memory"] . ' ' . $m["time"]);
     }
 }

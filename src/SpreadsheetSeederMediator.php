@@ -100,15 +100,22 @@ class SpreadsheetSeederMediator
         SeederHelper::memoryLog(__METHOD__ . '::' . __LINE__ . ' ' . 'seed');
         foreach ($this->sourceFile as $this->sourceSheet) {
             SeederHelper::memoryLog(__METHOD__ . '::' . __LINE__ . ' ' . "sheet:" . $this->sourceSheet->getTitle());
+            $m = SeederHelper::measurements();
+            $this->seeder->console("File: " . $this->sourceFile->getFilename() . " Sheet: " . $this->sourceSheet->getTitle() . " Row: " . $this->sourceSheet->key() . " " . $m["memory"] . " " . $m["time"], "info");
+            SeederHelper::memoryLog("File: " . $this->sourceFile->getFilename() . " Sheet: " . $this->sourceSheet->getTitle());
             $this->checkTable();
             $this->createTextOutputTable();
             foreach ($this->sourceSheet as $this->sourceChunk) {
-                SeederHelper::memoryLog(__METHOD__ . '::' . __LINE__ . ' ' . "sheet:" . $this->sourceSheet->getTitle() . " chunk: " . $this->sourceSheet->key());
+                if ($this->sourceSheet->key() >= $this->settings->readChunkSize) {
+                    $m = SeederHelper::measurements();
+                    SeederHelper::memoryLog("File: " . $this->sourceFile->getFilename() . " Sheet: " . $this->sourceSheet->getTitle() . " Chunk: " . $this->sourceSheet->key());
+                    $this->seeder->console("File: " . $this->sourceFile->getFilename() . " Sheet: " . $this->sourceSheet->getTitle() . " Row: " . $this->sourceSheet->key() . " " . $m["memory"] . " " . $m["time"], "info");
+                }
                 $this->processRows();
                 $this->insertRows();
                 $this->writeTextOutputTableRows();
 //                unset($this->sourceChunk);
-                SeederHelper::memoryLog(__METHOD__ . '::' . __LINE__ . ' ' . 'processed');
+//                SeederHelper::memoryLog(__METHOD__ . '::' . __LINE__ . ' ' . 'processed');
                 if ($this->exceedsLimit()) break;
             }
             $this->writeTextOutputFooter();
