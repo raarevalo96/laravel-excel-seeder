@@ -147,7 +147,10 @@ class SourceSheet implements \Iterator
 
         $this->workbook = $this->reader->load($this->fileName);
         $this->worksheet = $this->workbook->setActiveSheetIndexByName($this->worksheetName);
+        // This only returns the max row up to the chunk.  The only way to get the max row appears to be to load the entire file.
+//      $this->maxRow = $this->worksheet->getHighestDataRow();
         $this->loadedChunk = $startRow;
+
         SeederHelper::memoryLog(__METHOD__ . '::' . __LINE__ . ' ' . 'load chunk');
     }
 

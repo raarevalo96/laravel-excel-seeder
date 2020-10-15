@@ -3,6 +3,8 @@
 
 namespace bfinlay\SpreadsheetSeeder;
 
+use Illuminate\Support\Facades\DB;
+
 class SpreadsheetSeederMediator
 {
     /**
@@ -80,6 +82,10 @@ class SpreadsheetSeederMediator
      */
     public function run()
     {
+        // Prevent Laravel Framework memory leaks per https://github.com/laravel/framework/issues/30012
+        DB::connection()->disableQueryLog();
+        DB::connection()->unsetEventDispatcher();
+
         SeederHelper::memoryLog(__METHOD__ . '::' . __LINE__ . ' ' . 'start');
         $fileIterator = new FileIterator();
         if (!$fileIterator->count()) {
@@ -114,15 +120,22 @@ class SpreadsheetSeederMediator
                 $this->processRows();
                 $this->insertRows();
                 $this->writeTextOutputTableRows();
-//                unset($this->sourceChunk);
-//                SeederHelper::memoryLog(__METHOD__ . '::' . __LINE__ . ' ' . 'processed');
                 if ($this->exceedsLimit()) break;
+                $this->clearChunkMemory();
+                SeederHelper::memoryLog(__METHOD__ . '::' . __LINE__ . ' ' . 'processed');
             }
             $this->writeTextOutputFooter();
             $this->outputResults();
 //            unset($this->sourceSheet);
 //            unset($this->seedTable);
         }
+    }
+
+    private function clearChunkMemory() {
+        $this->rows = [];
+        $this->rawRows = [];
+
+//         unset($this->sourceChunk);
     }
 
     private function checkColumns()
