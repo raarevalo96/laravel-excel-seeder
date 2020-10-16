@@ -136,10 +136,11 @@ TextOutput can be disabled by setting `textOutput` to `FALSE`
 ## Configuration
 * [Aliases](#column-aliases) - (global) map column names to alternative column names
 * [Batch Insert Size](#batch-insert-size) - number of rows to insert per batch
+* [Date Formats](#date-formats) - configure date formats by column when Carbon cannot automatically parse date
 * [Defaults](#defaults) - (global) map column names to default values
 * [Delimiter](#delimiter) - specify CSV delimiter (default: auto detect)
 * [Extension](#data-source-file-default-extension) - default file extension when directory is specified (default: xlsx)
-* [Data Source File](#data-source-file) - path or paths of files to process (default: /database/seeds/*.xlsx)
+* [File](#data-source-file) - path or paths of data source files to process (default: /database/seeds/*.xlsx)
 * [Hashable](#hashable) - (global) array of column names hashed using Hash facade
 * [Header](#header) - (global) skip first row when true (default: true)
 * [Input Encodings](#input-encodings) - (global) array of possible encodings from input data source
@@ -180,29 +181,6 @@ Number of rows to insert in a batch.
 
 Default: `5000`
 
-### Defaults
-`$defaults` *(array [])*
-
-This is an associative array mapping column names in the data source to
-default values that will override any values in the datasource.
-
-Note: this setting is currently global and applies to all files or
-worksheets that are processed.  To apply differently to
-different files, process files with separate Seeder instances.
-
-Example: `['created_by' => 'seed', 'updated_by' => 'seed]`
-
-Default: `[]`
-
-### Delimiter
-`$delimiter` *(string NULL)*
-
-The delimiter used in CSV, tab-separate-files, and other text delimited
-files.  When this is not set, the phpspreadsheet library will
-automatically detect the text delimiter
-
-Default: `null`
-
 ### Date Formats
 `$dateFormats` *(array [])*
 
@@ -236,6 +214,29 @@ Example:
 ```
 
 Default: `[]`
+
+### Defaults
+`$defaults` *(array [])*
+
+This is an associative array mapping column names in the data source to
+default values that will override any values in the datasource.
+
+Note: this setting is currently global and applies to all files or
+worksheets that are processed.  To apply differently to
+different files, process files with separate Seeder instances.
+
+Example: `['created_by' => 'seed', 'updated_by' => 'seed]`
+
+Default: `[]`
+
+### Delimiter
+`$delimiter` *(string NULL)*
+
+The delimiter used in CSV, tab-separate-files, and other text delimited
+files.  When this is not set, the phpspreadsheet library will
+automatically detect the text delimiter
+
+Default: `null`
 
 ### Data Source File Default Extension
 `$extension` *(string 'xlsx'*)
