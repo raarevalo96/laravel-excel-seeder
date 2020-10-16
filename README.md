@@ -19,6 +19,12 @@ This project was forked from [laravel-csv-seeder](https://github.com/jeroenzwart
 - Seed default values into table columns.
 - Adjust Laravel's timestamp at seeding.
 
+### Scale
+This package has been used on CSV files with 5 million rows per file while maintaining flat memory usage (no memory leaks).
+
+### Unit Tests
+This package has a unit test suite.  Tests are added as enhancements are made or as bugs are found and fixed.
+
 ## Contents
 - [Installation](#installation)
 - [Simplest Usage](#simplest-usage)
@@ -196,6 +202,40 @@ files.  When this is not set, the phpspreadsheet library will
 automatically detect the text delimiter
 
 Default: `null`
+
+### Date Formats
+`$dateFormats` *(array [])*
+
+This is an associative array mapping column names in the data source to
+date format strings that should be used by Carbon to parse the date.
+Information to construct date format strings is here:
+[https://www.php.net/manual/en/datetime.createfromformat.php](https://www.php.net/manual/en/datetime.createfromformat.php)
+
+When the destination column in the database table is a date time format,
+and the source data is a string, the seeder will use Carbon to parse the
+date format.  In many cases Carbon can parse the date automatically
+without specifying the date format.
+
+When Carbon cannot parse the date automatically, map the column name in
+this array to the date format string.   When a source column is mapped,
+Carbon will use the date format string instead of parsing automatically.
+
+If column mapping is used (see [mapping](#mapping)) the column name should match the
+value in the $mapping array instead of the value in the file, if any.
+
+Note: this setting is currently global and applies to all files or
+worksheets that are processed.  All columns with the specified name in all files
+or worksheets will have the validation rule applied.  To apply differently to
+different files, process files with separate Seeder instances.
+
+Example:
+```
+[
+  'order_date' => 'Y-m-d H:i:s.u+',  // parses "2020-10-04 05:31:02.440000000"
+]
+```
+
+Default: `[]`
 
 ### Data Source File Default Extension
 `$extension` *(string 'xlsx'*)
@@ -803,6 +843,12 @@ This can be used after seeding to further process tables - for example to reset 
 Laravel Excel Seeder is open-sourced software licensed under the MIT license.
 
 ## Changes
+#### 2.1.12
+- enhance progress messages to show progress for each chunk: number of rows processed, memory usage, and processing time
+- fix memory leaks in laravel-excel-seeder
+- fix memory leaks in laravel framework
+- add configuration setting to specify date formats for columns that Carbon cannot automatically parse
+- add unit tests for date parsing
 #### 2.1.11
 - improved date support
 #### 2.1.10

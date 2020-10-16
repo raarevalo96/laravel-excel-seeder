@@ -73,6 +73,42 @@ class SpreadsheetSeederSettings
 
     /*
      * --------------------------------------------------------------------------
+     *  Date Formats
+     * --------------------------------------------------------------------------
+     *
+     *  This is an associative array mapping column names in the data source to
+     *  date format strings that should be used by Carbon to parse the date.
+     *  Information to construct date format strings is here:
+     *  https://www.php.net/manual/en/datetime.createfromformat.php
+     *
+     *  When the destination column in the database table is a date time format,
+     *  and the source data is a string, the seeder will use Carbon to parse the
+     *  date format.  In many cases Carbon can parse the date automatically
+     *  without specifying the date format.
+     *
+     *  When Carbon cannot parse the date automatically, map the column name in
+     *  this array to the date format string.   When a source column is mapped,
+     *  Carbon will use the date format string instead of parsing automatically.
+     *
+     *  If column mapping is used (see mapping) the column name should match the
+     *  value in the $mapping array instead of the value in the file, if any.
+     *
+     *  Note: this setting is currently global and applies to all files or
+     *  worksheets that are processed.  All columns with the specified name in all files
+     *  or worksheets will have the validation rule applied.  To apply differently to
+     *  different files, process files with separate Seeder instances.
+     *
+     *  Example: [
+     *    'order_date' => 'Y-m-d H:i:s.u+',  // parses "2020-10-04 05:31:02.440000000"
+     *  ]
+     *
+     *  Default: []
+     *
+     */
+    public $dateFormats = [];
+
+    /*
+     * --------------------------------------------------------------------------
      *  Data Source File Default Extension
      * --------------------------------------------------------------------------
      * 

@@ -117,14 +117,23 @@ class DestinationTable
 
     private function transformDateCellValue($columnName, $value) {
         if ($this->isDateColumn($columnName)) {
-            $date = $value;
+
             if (is_numeric($value)) {
                 if (in_array($columnName, $this->settings->unixTimestamps))
                         $date = Carbon::parse($value);
                 else
-                        $date = Date::excelToDateTimeObject($value);
+                        $date = Carbon::parse(Date::excelToDateTimeObject($value));
             }
-            return Carbon::parse($date)->toDateTimeString();
+            else {
+                if (isset($this->settings->dateFormats[$columnName])) {
+                    $date = Carbon::createFromFormat($this->settings->dateFormats[$columnName], $value);
+                }
+                else {
+                    $date = Carbon::parse($value);
+                }
+            }
+
+            return $date->format('Y-m-d H:i:s.u');
         }
         return $value;
     }

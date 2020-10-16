@@ -4,6 +4,7 @@ namespace bfinlay\SpreadsheetSeeder\Tests;
 
 use bfinlay\SpreadsheetSeeder\SpreadsheetSeederServiceProvider;
 use bfinlay\SpreadsheetSeeder\Tests\Seeds\ClassicModelsSeeder;
+use bfinlay\SpreadsheetSeeder\Tests\Seeds\DateTimeTest\DateTimeSeeder;
 use Orchestra\Testbench\TestCase;
 use Illuminate\Support\Carbon;
 
@@ -74,6 +75,17 @@ class DateTimeTest extends TestCase
         $this->assertEquals((new Carbon('January 12 2005')), new Carbon($order->order_date));
         $this->assertEquals((new Carbon('January 21 2005')), new Carbon($order->required_date));
         $this->assertEquals((new Carbon('January 16 2005')), new Carbon($order->shipped_date));
+    }
+
+    public function test_date_formats()
+    {
+        $this->seed(DateTimeSeeder::class);
+
+        $row = \DB::table('date_time_test')->first();
+        $this->assertEquals((new Carbon('October 15 2020 23:37')), new Carbon($row->excel_format));
+        $this->assertEquals((new Carbon('October 16 2020 04:37:09')), new Carbon($row->unix_format));
+        $this->assertEquals((new Carbon('October 04 2020 05:31:02.44')), new Carbon($row->string_format_1));
+        $this->assertEquals((new Carbon('October 15 2020')), new Carbon($row->string_format_2));
     }
 
 }
