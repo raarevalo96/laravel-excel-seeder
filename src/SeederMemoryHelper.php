@@ -4,7 +4,7 @@
 namespace bfinlay\SpreadsheetSeeder;
 
 
-class SeederHelper
+class SeederMemoryHelper
 {
     public static $memoryLogEnabled = false;
 

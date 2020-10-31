@@ -69,7 +69,7 @@ class LargeNumberOfRowsTest extends TestCase
      * Seed csv file with 15k rows and verify that last entry is accurate
      *
      */
-    public function test_15k_rows()
+    public function disabled_test_15k_rows()
     {
         $this->seed(FakeNamesCsvSeeder::class);
 
@@ -84,7 +84,7 @@ class LargeNumberOfRowsTest extends TestCase
      * Seed excel file with 15k rows and verify that last entry is accurate
      *
      */
-    public function test_15k_xlsx_rows()
+    public function disabled_test_15k_xlsx_rows()
     {
         $this->seed(FakeNamesXlsxSeeder::class);
 

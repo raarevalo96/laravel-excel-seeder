@@ -64,6 +64,8 @@ class DateTimeTest extends TestCase
      * Seed excel spreadsheet and verify that order dates are properly populated
      *
      * Seed classicmodels.xlsx and verify dates in order table
+     *
+     * @depends it_runs_the_migrations
      */
     public function test_order_dates()
     {
@@ -77,6 +79,9 @@ class DateTimeTest extends TestCase
         $this->assertEquals((new Carbon('January 16 2005')), new Carbon($order->shipped_date));
     }
 
+    /**
+     * @depends it_runs_the_migrations
+     */
     public function test_date_formats()
     {
         $this->seed(DateTimeSeeder::class);

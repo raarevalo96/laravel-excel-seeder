@@ -101,12 +101,12 @@ class SourceSheet implements \Iterator
 
         $this->createReadFilter();
         $this->createReader();
-        SeederHelper::memoryLog(__METHOD__ . '::' . __LINE__ . ' ' . 'construct sheet');
+        SeederMemoryHelper::memoryLog(__METHOD__ . '::' . __LINE__ . ' ' . 'construct sheet');
         $this->loadHeader();
-        SeederHelper::memoryLog(__METHOD__ . '::' . __LINE__ . ' ' . 'load header');
+        SeederMemoryHelper::memoryLog(__METHOD__ . '::' . __LINE__ . ' ' . 'load header');
 
         $this->header = $this->constructHeaderRow();
-        SeederHelper::memoryLog(__METHOD__ . '::' . __LINE__ . ' ' . 'construct header');
+        SeederMemoryHelper::memoryLog(__METHOD__ . '::' . __LINE__ . ' ' . 'construct header');
     }
 
     private function createReadFilter() {
@@ -151,7 +151,7 @@ class SourceSheet implements \Iterator
 //      $this->maxRow = $this->worksheet->getHighestDataRow();
         $this->loadedChunk = $startRow;
 
-        SeederHelper::memoryLog(__METHOD__ . '::' . __LINE__ . ' ' . 'load chunk');
+        SeederMemoryHelper::memoryLog(__METHOD__ . '::' . __LINE__ . ' ' . 'load chunk');
     }
 
     private function constructHeaderRow() {

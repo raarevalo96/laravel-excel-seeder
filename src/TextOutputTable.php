@@ -139,6 +139,7 @@ class TextOutputTable
 
     public function writeFooter() {
         $this->file->fwrite('(' . $this->rowCount . " rows)\n\n");
+        $this->file->fflush();
     }
 
     private function writeTableName() {

@@ -86,7 +86,7 @@ class SpreadsheetSeederMediator
         DB::connection()->disableQueryLog();
         DB::connection()->unsetEventDispatcher();
 
-        SeederHelper::memoryLog(__METHOD__ . '::' . __LINE__ . ' ' . 'start');
+        SeederMemoryHelper::memoryLog(__METHOD__ . '::' . __LINE__ . ' ' . 'start');
         $fileIterator = new FileIterator();
         if (!$fileIterator->count()) {
             $this->seeder->console('No spreadsheet file given', 'error');
@@ -94,7 +94,7 @@ class SpreadsheetSeederMediator
         }
 
         foreach ($fileIterator as $this->sourceFile) {
-            SeederHelper::memoryLog(__METHOD__ . '::' . __LINE__ . ' ' . 'file');
+            SeederMemoryHelper::memoryLog(__METHOD__ . '::' . __LINE__ . ' ' . 'file');
             $this->seed();
         }
 
@@ -103,39 +103,45 @@ class SpreadsheetSeederMediator
 
     public function seed()
     {
-        SeederHelper::memoryLog(__METHOD__ . '::' . __LINE__ . ' ' . 'seed');
+        SeederMemoryHelper::memoryLog(__METHOD__ . '::' . __LINE__ . ' ' . 'seed');
+        $textOutputWriter = new TextOutputWriter($this->sourceFile);
+
         foreach ($this->sourceFile as $this->sourceSheet) {
-            SeederHelper::memoryLog(__METHOD__ . '::' . __LINE__ . ' ' . "sheet:" . $this->sourceSheet->getTitle());
-            $m = SeederHelper::measurements();
+            $m = SeederMemoryHelper::measurements();
             $this->seeder->console("File: " . $this->sourceFile->getFilename() . " Sheet: " . $this->sourceSheet->getTitle() . " Row: " . $this->sourceSheet->key() . " " . $m["memory"] . " " . $m["time"], "info");
-            SeederHelper::memoryLog("File: " . $this->sourceFile->getFilename() . " Sheet: " . $this->sourceSheet->getTitle());
+            SeederMemoryHelper::memoryLog("File: " . $this->sourceFile->getFilename() . " Sheet: " . $this->sourceSheet->getTitle());
+
             $this->checkTable();
-            $this->createTextOutputTable();
+            $textOutputWriter->openSheet($this->sourceSheet);
+
+            $chunkCount = 1;
             foreach ($this->sourceSheet as $this->sourceChunk) {
-                if ($this->sourceSheet->key() >= $this->settings->readChunkSize) {
-                    $m = SeederHelper::measurements();
-                    SeederHelper::memoryLog("File: " . $this->sourceFile->getFilename() . " Sheet: " . $this->sourceSheet->getTitle() . " Chunk: " . $this->sourceSheet->key());
+                if ($chunkCount > 1) {
+                    $m = SeederMemoryHelper::measurements();
+                    SeederMemoryHelper::memoryLog("File: " . $this->sourceFile->getFilename() . " Sheet: " . $this->sourceSheet->getTitle() . " Chunk: " . $this->sourceSheet->key());
                     $this->seeder->console("File: " . $this->sourceFile->getFilename() . " Sheet: " . $this->sourceSheet->getTitle() . " Row: " . $this->sourceSheet->key() . " " . $m["memory"] . " " . $m["time"], "info");
                 }
+
                 $this->processRows();
                 $this->insertRows();
-                $this->writeTextOutputTableRows();
+
+                $textOutputWriter->saveChunk($this->rawRows);
+
                 if ($this->exceedsLimit()) break;
+
                 $this->clearChunkMemory();
-                SeederHelper::memoryLog(__METHOD__ . '::' . __LINE__ . ' ' . 'processed');
+                SeederMemoryHelper::memoryLog(__METHOD__ . '::' . __LINE__ . ' ' . 'processed');
+                $chunkCount++;
             }
-            $this->writeTextOutputFooter();
+
+            $textOutputWriter->closeSheet();
             $this->outputResults();
-//            unset($this->sourceSheet);
-//            unset($this->seedTable);
         }
     }
 
     private function clearChunkMemory() {
         $this->rows = [];
         $this->rawRows = [];
-
-//         unset($this->sourceChunk);
     }
 
     private function checkColumns()
@@ -177,53 +183,6 @@ class SpreadsheetSeederMediator
             $this->resultCount++;
 
             if ($this->exceedsLimit()) break;
-        }
-    }
-
-    private function openTextOutputFile()
-    {
-        $pathname = '';
-        $path_parts = pathinfo($this->sourceFile->getPathname());
-        if (strlen($path_parts['dirname']) > 0) $pathname = $path_parts['dirname'] . '/';
-        $pathname = $pathname . $path_parts['filename'];
-
-        $mkdirResult = false;
-        if (!(is_dir($pathname))) {
-            $mkdirResult = mkdir($pathname, 0777, true);
-        }
-
-        $filename = $pathname . '/' . $this->sourceSheet->getTableName() . '.' . $this->settings->textOutputFileExtension;
-
-        $this->textOutputFile = new \SplFileObject($filename, 'w');
-    }
-
-    private function createTextOutputTable()
-    {
-        if (!$this->settings->textOutput) return;
-
-        $this->openTextOutputFile();
-        $this->textOutputTable = new TextOutputTable(
-            $this->textOutputFile,
-            $this->sourceSheet->getTableName(),
-            $this->sourceSheet->getHeader()->rawColumns()
-        );
-    }
-
-    private function writeTextOutputTableRows()
-    {
-        if ($this->settings->textOutput) {
-            $this->textOutputTable->writeRows($this->rawRows);
-        }
-        $this->rawRows = [];
-    }
-
-    private function writeTextOutputFooter()
-    {
-        if ($this->settings->textOutput) {
-            $this->textOutputTable->writeFooter();
-            $this->textOutputFile->fflush();
-            $this->textOutputFile = null;
-            unset($this->textOutputTable);
         }
     }
 
