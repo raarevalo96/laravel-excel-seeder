@@ -844,6 +844,8 @@ This can be used after seeding to further process tables - for example to reset 
 Laravel Excel Seeder is open-sourced software licensed under the MIT license.
 
 ## Changes
+#### 2.1.14
+- fix for change to mb_convert_encoding in PHP 8 issue #7 (contributed by @mw7147)
 #### 2.1.13
 - fix bug in text output tables: deleted worksheets were not deleted from text output tables
 - refactor text output tables

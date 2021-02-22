@@ -115,7 +115,10 @@ class SourceRow
     }
 
     private function encode($value) {
-        if( is_string($value) ) $value = mb_convert_encoding($value, $this->settings->outputEncoding, $this->settings->inputEncodings);
+        if( is_string($value) )
+            $value = empty($this->settings->inputEncodings) ?
+                mb_convert_encoding($value, $this->settings->outputEncoding) :
+                mb_convert_encoding($value, $this->settings->outputEncoding, $this->settings->inputEncodings);
         return $value;
     }
 
