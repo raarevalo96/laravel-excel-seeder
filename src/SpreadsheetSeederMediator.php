@@ -40,7 +40,7 @@ class SpreadsheetSeederMediator
     /**
      * @var string[]
      */
-    public $tablesSeeded;
+    public $tablesSeeded = [];
 
     /**
      * @var string[][]

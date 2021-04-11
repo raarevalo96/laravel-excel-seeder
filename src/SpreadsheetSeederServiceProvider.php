@@ -2,6 +2,7 @@
 
 namespace bfinlay\SpreadsheetSeeder;
 
+use bfinlay\SpreadsheetSeeder\Console\SeedCommand;
 use Illuminate\Support\ServiceProvider;
 
 class SpreadsheetSeederServiceProvider extends ServiceProvider
@@ -12,16 +13,6 @@ class SpreadsheetSeederServiceProvider extends ServiceProvider
 	 * @var bool
 	 */
     protected $defer = false;
-    
-    /**
-     * Bootstrap services.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        //
-    }
 
     /**
      * Register services.
@@ -34,6 +25,27 @@ class SpreadsheetSeederServiceProvider extends ServiceProvider
         $this->app->singleton(SpreadsheetSeederSettings::class, function ($app) {
             return new SpreadsheetSeederSettings();
         });
+
+//        $this->app->singleton('command.seed', function ($app) {
+//            return new SeedCommand($app['db']);
+//        });
+
+        $this->app->singleton(SeedCommand::class, function ($app) {
+            return new SeedCommand($app['db']);
+        });
+    }
+
+    /**
+     * Bootstrap services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        $this->commands([
+//            'command.seed',
+            SeedCommand::class,
+        ]);
     }
 
     /**

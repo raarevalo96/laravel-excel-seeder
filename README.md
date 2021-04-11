@@ -29,6 +29,7 @@ This package has a unit test suite.  Tests are added as enhancements are made or
 - [Installation](#installation)
 - [Simplest Usage](#simplest-usage)
 - [Basic Usage](#basic-usage)
+- [Seeding Individual Sheets](#seeding-individual-sheets)
 - [Markdown Diffs](#excel-text-markdown-output-for-branch-diffs)
 - [Configuration Settings](#configuration)
 - [Conversion Details](#details)
@@ -116,8 +117,42 @@ class UsersTableSeeder extends SpreadsheetSeeder
     }
 }
 ```
+## Seeding Individual Sheets
+By default, executing te `db:seed` Artisan command will seed all worksheets within a workbook.
+
+If you want to specify individual sheets to seed, you may use the `xl:seed` Artisan command
+with the `--seed` option.  You may specify multiple `--seed` options.
+
+```
+php artisan xl:seed --seed=users --seed=posts 
+```
+
+The above will run the `Database\Seeders\DatabaseSeeder` class, and for any SpreadsheetSeeders that are invoked
+will only seed sheets named `users` and `posts`.  You may use the `--class` option to specify a specific seeder
+class to run individually
+
+```
+php artisan xl:seed --class=MySpreadsheetSeederClass --seed=users --seed=posts
+```
+
+If you want to run the default `SpreadsheetSeeder` class, you can specify `--class=#`, because the `#` resembles a spreadsheet.
+
+```
+php artisan xl:seed --class=# --seed=users --seed=posts
+```
+
+For an easier syntax, you can also pass these as arguments and omit the --class and --seed.   When using arguments,  
+the first argument must be the class, and subsequent arguments will be sheets.
+
+```
+php artisan xl:seed # users posts
+```
+
+Important note: as with seeding traditional seeder classes individually, when seeding individual sheets if the truncate option is true,
+relations with cascade delete will be deleted.
+
 ## Excel Text Markdown Output for Branch Diffs
-After running the database seeder, a subdirectory will be created using  
+After running the database seeder, a subdirectory will be created using
 the same name as the input file.  A text output file will be created
 for each worksheet using the worksheet name with an "md"
 extension.  This text file contains a markdown text representation of each
@@ -857,6 +892,8 @@ This can be used after seeding to further process tables - for example to reset 
 Laravel Excel Seeder is open-sourced software licensed under the MIT license.
 
 ## Changes
+#### 2.1.16
+- added `xl:seed` command to specify individual sheets as suggested in issue #8
 #### 2.1.15
 - update truncate table to disable foreign key integrity constraints issue #8
 #### 2.1.14

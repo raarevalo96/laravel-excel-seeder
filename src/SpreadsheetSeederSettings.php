@@ -445,6 +445,20 @@ class SpreadsheetSeederSettings
      */
     public $worksheetTableMapping = [];
 
+    /*
+     * --------------------------------------------------------------------------
+     *  Worksheets
+     * --------------------------------------------------------------------------
+     *
+     *  If array is not empty, only worksheets matching entries in the array will be seeded.
+     *
+     *  Example: ['Sheet1',  'Sheet2']
+     *
+     *  Default: []
+     *
+     */
+    public $worksheets = [];
+
 
     private static $instance = null;
 

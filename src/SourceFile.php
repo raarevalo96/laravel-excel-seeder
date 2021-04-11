@@ -117,10 +117,6 @@ class SourceFile implements \Iterator
     public function current()
     {
         $sheetName = $this->sheetNames[$this->sheetIndex];
-        if ($this->shouldSkipSheet($sheetName) ) {
-            $this->next();
-            $sheetName = $this->sheetNames[$this->sheetIndex];
-        }
 
         $sourceSheet = new SourceSheet($this->file->getPathname(), $this->fileType, $sheetName);
         if (count($this->sheetNames) == 1) {
@@ -130,7 +126,13 @@ class SourceFile implements \Iterator
     }
 
     private function shouldSkipSheet($sheetName) {
-        return $this->settings->skipper == substr($sheetName, 0, strlen($this->settings->skipper));
+        return
+            $this->settings->skipper == substr($sheetName, 0, strlen($this->settings->skipper)) ||
+            (
+                is_array($this->settings->worksheets) &&
+                count($this->settings->worksheets) > 0 &&
+                ! in_array($sheetName, $this->settings->worksheets)
+            );
     }
 
     /**
@@ -139,9 +141,6 @@ class SourceFile implements \Iterator
     public function next()
     {
         $this->sheetIndex++;
-        if (! $this->valid() ) return;
-        // If this worksheet is marked for skipping, recursively call this function for the next sheet
-        if( $this->shouldSkipSheet($this->sheetNames[$this->sheetIndex]) ) $this->next();
     }
 
     /**
@@ -157,6 +156,14 @@ class SourceFile implements \Iterator
      */
     public function valid()
     {
+        while (
+            $this->sheetIndex < count($this->sheetNames) &&
+            $this->shouldSkipSheet($this->sheetNames[$this->sheetIndex])
+        )
+        {
+            $this->sheetIndex++;
+        }
+
         return $this->sheetIndex < count($this->sheetNames);
     }
 
