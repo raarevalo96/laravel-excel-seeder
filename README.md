@@ -149,7 +149,7 @@ php artisan xl:seed # users posts
 ```
 
 Important note: as with seeding traditional seeder classes individually, when seeding individual sheets if the truncate option is true,
-relations with cascade delete will be deleted.
+relations with cascade delete will also be deleted.
 
 ## Excel Text Markdown Output for Branch Diffs
 After running the database seeder, a subdirectory will be created using
