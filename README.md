@@ -1,4 +1,4 @@
-# Laravel Excel Seeder
+# Excel Seeder for Laravel
 > #### Seed your database using CSV files, XLSX files, and more with Laravel
 
 With this package you can save time seeding your database. Instead of typing out seeder files, you can use CSV, XLSX, or any supported spreadsheet file format to load your project's database. There are configuration options available to control the insertion of data from your spreadsheet files.
