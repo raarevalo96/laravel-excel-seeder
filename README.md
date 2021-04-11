@@ -118,7 +118,7 @@ class UsersTableSeeder extends SpreadsheetSeeder
 }
 ```
 ## Seeding Individual Sheets
-By default, executing te `db:seed` Artisan command will seed all worksheets within a workbook.
+By default, executing the `db:seed` Artisan command will seed all worksheets within a workbook.
 
 If you want to specify individual sheets to seed, you may use the `xl:seed` Artisan command
 with the `--seed` option.  You may specify multiple `--seed` options.
@@ -135,7 +135,7 @@ class to run individually
 php artisan xl:seed --class=MySpreadsheetSeederClass --seed=users --seed=posts
 ```
 
-If you want to run the default `SpreadsheetSeeder` class, you can specify `--class=#`, because the `#` resembles a spreadsheet.
+If you want to run the default `SpreadsheetSeeder` class, you can specify `--class=#`.  (The `#` resembles a spreadsheet.)
 
 ```
 php artisan xl:seed --class=# --seed=users --seed=posts
