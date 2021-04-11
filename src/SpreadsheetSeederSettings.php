@@ -364,6 +364,20 @@ class SpreadsheetSeederSettings
 
     /*
      * --------------------------------------------------------------------------
+     *  Truncate Destination Table Ignoring Foreign Key Constraints
+     * --------------------------------------------------------------------------
+     *
+     *  Ignore foreign key constraints when truncating the table before seeding.
+     *
+     *  Default: TRUE
+     *
+     *  Note: does not currently support array of table names to exclude
+     *
+     */
+    public $truncateIgnoreForeign = TRUE;
+
+    /*
+     * --------------------------------------------------------------------------
      *  Unix Timestamps
      * --------------------------------------------------------------------------
      *

@@ -16,9 +16,15 @@
 		"phpoffice/phpspreadsheet": "~1.7",
 		"doctrine/dbal": "^2.9"
 	},
+	"repositories-disabled": [
+		{
+			"type": "path",
+			"url": "../laravel-excel-seeder-test-data"
+		}
+	],
 	"require-dev": {
 		"orchestra/testbench": "*",
-		"bfinlay/laravel-excel-seeder-test-data": "2.1.12"
+		"bfinlay/laravel-excel-seeder-test-data": "2.1.15"
 	},
 	"autoload": {
 		"psr-4": {

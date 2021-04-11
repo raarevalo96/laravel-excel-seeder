@@ -155,6 +155,7 @@ TextOutput can be disabled by setting `textOutput` to `FALSE`
 * [Text Output File Extension](#text-output-file-extension) - extension for text output table
 * [Timestamps](#timestamps) - when true, set the Laravel timestamp columns 'created_at' and 'updated_at' with current date/time (default: true)
 * [Truncate](#truncate-destination-table) - truncate the table before seeding (default: true)
+* [Truncate Ignore Foreign Key Constraints](#truncate-ignore-foreign) - truncate the table before seeding (default: true)
 * [Unix Timestamps](#unix-timestamps) - interpret date/time values as unix timestamps instead of excel timestamps for specified columns (default: no columns)
 * [Validate](#validate) - map column names to laravel validation rules
 * [Worksheet Table Mapping](#worksheet-table-mapping) - map names of worksheets to table names
@@ -520,6 +521,18 @@ Note: does not currently support array of table names to exclude
 
 See example for [tablename](#destination-table-name) above
 
+### Truncate Destination Table Ignoring Foreign Key Constraints
+`$truncateIgnoreForeign` *(boolean TRUE)*
+
+Ignore foreign key constraints when truncating the table before seeding.
+
+When `false`, table will not be truncated if it violates foreign key integrity.
+
+Default: `TRUE`
+
+Note: does not currently support array of table names to exclude
+
+
 ### Unix Timestamps
 `$unixTimestamps` *(array [])*
 
@@ -844,6 +857,8 @@ This can be used after seeding to further process tables - for example to reset 
 Laravel Excel Seeder is open-sourced software licensed under the MIT license.
 
 ## Changes
+#### 2.1.15
+- update truncate table to disable foreign key integrity constraints issue #8
 #### 2.1.14
 - fix for change to mb_convert_encoding in PHP 8 issue #7 (contributed by @mw7147)
 #### 2.1.13

@@ -6,6 +6,7 @@ namespace bfinlay\SpreadsheetSeeder;
 use Doctrine\DBAL\Schema\Column;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 class DestinationTable
@@ -40,7 +41,7 @@ class DestinationTable
      */
     private $doctrineColumns;
 
-    public function __construct($name, SpreadsheetSeederSettings $settings)
+    public function __construct($name)
     {
         $this->name = $name;
         $this->settings = resolve(SpreadsheetSeederSettings::class);
@@ -64,12 +65,14 @@ class DestinationTable
         return DB::getSchemaBuilder()->hasTable( $name );
     }
 
-    public function truncate( $foreignKeys = TRUE ) {
-        if( ! $foreignKeys ) DB::statement('SET FOREIGN_KEY_CHECKS = 0;');
+    public function truncate() {
+        $ignoreForeign = $this->settings->truncateIgnoreForeign;
+
+        if( $ignoreForeign ) Schema::disableForeignKeyConstraints();
 
         DB::table( $this->name )->truncate();
 
-        if( ! $foreignKeys ) DB::statement('SET FOREIGN_KEY_CHECKS = 1;');
+        if( $ignoreForeign ) Schema::enableForeignKeyConstraints();
     }
 
     private function loadColumns() {
