@@ -121,10 +121,10 @@ class UsersTableSeeder extends SpreadsheetSeeder
 By default, executing the `db:seed` Artisan command will seed all worksheets within a workbook.
 
 If you want to specify individual sheets to seed, you may use the `xl:seed` Artisan command
-with the `--seed` option.  You may specify multiple `--seed` options.
+with the `--sheet` option.  You may specify multiple `--sheet` options.
 
 ```
-php artisan xl:seed --seed=users --seed=posts 
+php artisan xl:seed --sheet=users --sheet=posts 
 ```
 
 The above will run the `Database\Seeders\DatabaseSeeder` class, and for any SpreadsheetSeeders that are invoked
@@ -132,13 +132,13 @@ will only seed sheets named `users` and `posts`.  You may use the `--class` opti
 class to run individually
 
 ```
-php artisan xl:seed --class=MySpreadsheetSeederClass --seed=users --seed=posts
+php artisan xl:seed --class=MySpreadsheetSeederClass --sheet=users --sheet=posts
 ```
 
 If you want to run the default `SpreadsheetSeeder` class, you can specify `--class=#`.  (The `#` resembles a spreadsheet.)
 
 ```
-php artisan xl:seed --class=# --seed=users --seed=posts
+php artisan xl:seed --class=# --sheet=users --sheet=posts
 ```
 
 For an easier syntax, you can also pass these as arguments and omit the --class and --seed.   When using arguments,  
@@ -892,7 +892,7 @@ This can be used after seeding to further process tables - for example to reset 
 Laravel Excel Seeder is open-sourced software licensed under the MIT license.
 
 ## Changes
-#### 2.1.16
+#### 2.2.0
 - added `xl:seed` command to specify individual sheets as suggested in issue #8
 #### 2.1.15
 - update truncate table to disable foreign key integrity constraints issue #8
