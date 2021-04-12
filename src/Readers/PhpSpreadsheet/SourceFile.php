@@ -40,7 +40,7 @@ class SourceFile implements \Iterator
      * @var int
      */
     private $sheetIndex = 0;
-    
+
     public function __construct(SplFileInfo $file)
     {
         $this->file = $file;
