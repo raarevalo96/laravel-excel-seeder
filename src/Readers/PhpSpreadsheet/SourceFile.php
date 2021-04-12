@@ -1,15 +1,12 @@
 <?php
 
 
-namespace bfinlay\SpreadsheetSeeder;
+namespace bfinlay\SpreadsheetSeeder\Readers\PhpSpreadsheet;
 
 
-use bfinlay\SpreadsheetSeeder\SourceFileReadFilter;
+use bfinlay\SpreadsheetSeeder\SpreadsheetSeederSettings;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\BaseReader;
-use PhpOffice\PhpSpreadsheet\Reader\Csv;
-use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use SplFileInfo;
 
 class SourceFile implements \Iterator
@@ -43,14 +40,7 @@ class SourceFile implements \Iterator
      * @var int
      */
     private $sheetIndex = 0;
-
-    /**
-     * @var Workbook
-     */
-    private $workbook;
-
-    private $worksheetIterator;
-
+    
     public function __construct(SplFileInfo $file)
     {
         $this->file = $file;

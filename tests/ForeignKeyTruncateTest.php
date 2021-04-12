@@ -2,7 +2,7 @@
 
 namespace bfinlay\SpreadsheetSeeder\Tests;
 
-use bfinlay\SpreadsheetSeeder\DestinationTable;
+use bfinlay\SpreadsheetSeeder\Writers\Database\DestinationTable;
 use bfinlay\SpreadsheetSeeder\SpreadsheetSeederServiceProvider;
 use bfinlay\SpreadsheetSeeder\SpreadsheetSeederSettings;
 use bfinlay\SpreadsheetSeeder\Tests\Seeds\ForeignKeyTruncateTest\ForeignKeyTruncateSeeder;

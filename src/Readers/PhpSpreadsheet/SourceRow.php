@@ -1,9 +1,10 @@
 <?php
 
 
-namespace bfinlay\SpreadsheetSeeder;
+namespace bfinlay\SpreadsheetSeeder\Readers\PhpSpreadsheet;
 
 
+use bfinlay\SpreadsheetSeeder\SpreadsheetSeederSettings;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use PhpOffice\PhpSpreadsheet\Cell\Cell;

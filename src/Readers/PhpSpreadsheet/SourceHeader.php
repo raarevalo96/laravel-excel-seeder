@@ -1,9 +1,9 @@
 <?php
 
 
-namespace bfinlay\SpreadsheetSeeder;
+namespace bfinlay\SpreadsheetSeeder\Readers\PhpSpreadsheet;
 
-use Exception;
+use bfinlay\SpreadsheetSeeder\SpreadsheetSeederSettings;
 use PhpOffice\PhpSpreadsheet\Worksheet\Row;
 
 class SourceHeader

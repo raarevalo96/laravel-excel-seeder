@@ -1,8 +1,10 @@
 <?php
 
 
-namespace bfinlay\SpreadsheetSeeder;
+namespace bfinlay\SpreadsheetSeeder\Writers\Markdown;
 
+
+use Exception;
 
 class TextOutputTable
 {

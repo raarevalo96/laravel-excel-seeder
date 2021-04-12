@@ -1,8 +1,9 @@
 <?php
 
 
-namespace bfinlay\SpreadsheetSeeder;
+namespace bfinlay\SpreadsheetSeeder\Writers\Database;
 
+use bfinlay\SpreadsheetSeeder\SpreadsheetSeederSettings;
 use Doctrine\DBAL\Schema\Column;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;

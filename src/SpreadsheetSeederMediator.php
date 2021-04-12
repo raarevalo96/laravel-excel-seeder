@@ -3,6 +3,13 @@
 
 namespace bfinlay\SpreadsheetSeeder;
 
+use bfinlay\SpreadsheetSeeder\Readers\PhpSpreadsheet\FileIterator;
+use bfinlay\SpreadsheetSeeder\Readers\PhpSpreadsheet\SourceChunk;
+use bfinlay\SpreadsheetSeeder\Readers\PhpSpreadsheet\SourceFile;
+use bfinlay\SpreadsheetSeeder\Readers\PhpSpreadsheet\SourceSheet;
+use bfinlay\SpreadsheetSeeder\Writers\Database\DestinationTable;
+use bfinlay\SpreadsheetSeeder\Writers\Markdown\TextOutputTable;
+use bfinlay\SpreadsheetSeeder\Writers\Markdown\TextOutputWriter;
 use Illuminate\Support\Facades\DB;
 
 class SpreadsheetSeederMediator

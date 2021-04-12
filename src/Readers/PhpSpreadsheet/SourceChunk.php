@@ -1,9 +1,9 @@
 <?php
 
 
-namespace bfinlay\SpreadsheetSeeder;
+namespace bfinlay\SpreadsheetSeeder\Readers\PhpSpreadsheet;
 
-use PhpOffice\PhpSpreadsheet\Worksheet\Row;
+use bfinlay\SpreadsheetSeeder\SpreadsheetSeederSettings;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class SourceChunk implements \Iterator
@@ -22,11 +22,6 @@ class SourceChunk implements \Iterator
      * @var string
      */
     private $tableName;
-
-    /**
-     * @var string
-     */
-    private $fileType;
 
     /**
      * @var \Iterator

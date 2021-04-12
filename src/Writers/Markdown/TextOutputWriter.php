@@ -1,7 +1,11 @@
 <?php
 
 
-namespace bfinlay\SpreadsheetSeeder;
+namespace bfinlay\SpreadsheetSeeder\Writers\Markdown;
+
+use bfinlay\SpreadsheetSeeder\Readers\PhpSpreadsheet\SourceFile;
+use bfinlay\SpreadsheetSeeder\Readers\PhpSpreadsheet\SourceSheet;
+use bfinlay\SpreadsheetSeeder\SpreadsheetSeederSettings;
 
 /**
  * Class TextOutputWriter

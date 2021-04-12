@@ -1,7 +1,9 @@
 <?php
 
 
-namespace bfinlay\SpreadsheetSeeder;
+namespace bfinlay\SpreadsheetSeeder\Readers\PhpSpreadsheet;
+
+use bfinlay\SpreadsheetSeeder\SpreadsheetSeederSettings;
 
 /**
  * Consider enhancing with FlySystem integration

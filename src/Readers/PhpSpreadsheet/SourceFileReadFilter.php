@@ -1,7 +1,7 @@
 <?php
 
 
-namespace bfinlay\SpreadsheetSeeder;
+namespace bfinlay\SpreadsheetSeeder\Readers\PhpSpreadsheet;
 
 
 use PhpOffice\PhpSpreadsheet\Reader\IReadFilter;
