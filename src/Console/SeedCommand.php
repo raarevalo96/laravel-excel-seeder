@@ -17,7 +17,10 @@ class SeedCommand extends \Illuminate\Database\Console\Seeds\SeedCommand
     protected function getSeeder()
     {
         $class = $this->argument('class');
-        if (is_null($class)) $class = $this->option('class');
+        if (is_null($class))
+            $class = $this->option('class');
+        else
+            $this->input->setOption('class', $class); // support Laravel 6, 7
 
         if (($class === 'SpreadsheetSeeder' || $class === '#') &&
             class_exists(SpreadsheetSeeder::class)) {
@@ -31,11 +34,27 @@ class SeedCommand extends \Illuminate\Database\Console\Seeds\SeedCommand
         return parent::getSeeder();
     }
 
+    protected function hasDefinedClassArgument($arguments)
+    {
+        foreach ($arguments as $argument)
+        {
+            if ( $argument[0] == 'class' ) return true;
+        }
+
+        return false;
+    }
+
     protected function getArguments()
     {
-        return array_merge(parent::getArguments(), [
-            ['sheet', InputArgument::IS_ARRAY | InputArgument::OPTIONAL, 'The name of the worksheet to seed', null],
-        ]);
+        $arguments = parent::getArguments();
+
+        // Laravel 8 defines class as an argument.  Laravel 5.8, 6, and 7 do not.
+        if (! $this->hasDefinedClassArgument($arguments))
+            $arguments[] = ['class', InputArgument::OPTIONAL, 'The class name of the root seeder', null];
+
+        $arguments[] = ['sheet', InputArgument::IS_ARRAY | InputArgument::OPTIONAL, 'The name of the worksheet to seed', null];
+
+        return $arguments;
     }
 
     protected function getOptions()

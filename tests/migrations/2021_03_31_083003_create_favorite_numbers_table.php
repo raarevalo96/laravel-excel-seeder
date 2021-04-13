@@ -14,9 +14,10 @@ class CreateFavoriteNumbersTable extends Migration
     public function up()
     {
         Schema::create('favorite_numbers', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
             $table->timestamps();
-            $table->foreignId('user_id')->constrained();
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->integer('favorite_number');
         });
     }

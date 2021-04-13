@@ -66,14 +66,14 @@ class ForeignKeyTruncateTest extends TestCase
     {
         $this->seed(ForeignKeyTruncateSeeder::class);
 
-        $this->assertDatabaseCount('users', 2);
-        $this->assertDatabaseCount('favorite_numbers', 2);
+        $this->assertEquals(2, \DB::table('users')->count());
+        $this->assertEquals(2, \DB::table('favorite_numbers')->count());
 
         $this->expectExceptionMessage('Integrity constraint violation: 19 FOREIGN KEY constraint failed');
         \DB::table('users')->truncate();
 
-        $this->assertDatabaseCount('users', 2);
-        $this->assertDatabaseCount('favorite_numbers', 2);
+        $this->assertEquals(2, \DB::table('users')->count());
+        $this->assertEquals(2, \DB::table('favorite_numbers')->count());
     }
 
 
@@ -89,14 +89,14 @@ class ForeignKeyTruncateTest extends TestCase
         $settings = resolve(SpreadsheetSeederSettings::class);
         $settings->truncateIgnoreForeign = false;
 
-        $this->assertDatabaseCount('users', 2);
-        $this->assertDatabaseCount('favorite_numbers', 2);
+        $this->assertEquals(2, \DB::table('users')->count());
+        $this->assertEquals(2, \DB::table('favorite_numbers')->count());
 
         $this->expectExceptionMessage('Integrity constraint violation: 19 FOREIGN KEY constraint failed');
         $usersTable = new DestinationTable('users');
 
-        $this->assertDatabaseCount('users', 0);
-        $this->assertDatabaseCount('favorite_numbers', 2);
+        $this->assertEquals(0, \DB::table('users')->count());
+        $this->assertEquals(2, \DB::table('favorite_numbers')->count());
     }
 
 
@@ -112,13 +112,13 @@ class ForeignKeyTruncateTest extends TestCase
         $settings = resolve(SpreadsheetSeederSettings::class);
         $settings->truncateIgnoreForeign = true;
 
-        $this->assertDatabaseCount('users', 2);
-        $this->assertDatabaseCount('favorite_numbers', 2);
+        $this->assertEquals(2, \DB::table('users')->count());
+        $this->assertEquals(2, \DB::table('favorite_numbers')->count());
 
         $usersTable = new DestinationTable('users');
 
-        $this->assertDatabaseCount('users', 0);
-        $this->assertDatabaseCount('favorite_numbers', 2);
+        $this->assertEquals(0, \DB::table('users')->count());
+        $this->assertEquals(2, \DB::table('favorite_numbers')->count());
     }
 
 }

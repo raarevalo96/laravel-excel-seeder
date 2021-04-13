@@ -169,7 +169,7 @@ class SelectiveWorksheetTest extends TestCase
             'products',
         ];
 
-        foreach ($emptyTables as $table) $this->assertDatabaseCount($table, 0);
+        foreach ($emptyTables as $table) $this->assertEquals(0, \DB::table($table)->count());
     }
 
     public function test_all_tables_empty_when_nonexistant_table_specified()
@@ -190,7 +190,7 @@ class SelectiveWorksheetTest extends TestCase
             'products',
         ];
 
-        foreach ($emptyTables as $table) $this->assertDatabaseCount($table, 0);
+        foreach ($emptyTables as $table) $this->assertEquals(0, \DB::table($table)->count());
     }
 
     public function test_xl_seed_command_no_sheet_option()
@@ -206,7 +206,7 @@ class SelectiveWorksheetTest extends TestCase
             'products',
         ];
 
-        $class = Str::of(ClassicModelsSeeder::class)->replace('\\', '\\\\');
+        $class = str_replace('\\', '\\\\', ClassicModelsSeeder::class);
         $this->artisan("xl:seed --class=$class");
 
         $this->assertTableHasExpectedData($testTables);
@@ -228,14 +228,14 @@ class SelectiveWorksheetTest extends TestCase
             'products',
         ];
 
-        $class = Str::of(ClassicModelsSeeder::class)->replace('\\', '\\\\');
+        $class = str_replace('\\', '\\\\', ClassicModelsSeeder::class);
         $this->artisan("xl:seed --class=$class --sheet=offices");
 
 //        $this->artisan('xl:seed', ['--class' => ClassicModelsSeeder::class, '--sheet' => 'offices']);
 
         $this->assertTableHasExpectedData($testTables);
 
-        foreach ($emptyTables as $table) $this->assertDatabaseCount($table, 0);
+        foreach ($emptyTables as $table) $this->assertEquals(0, \DB::table($table)->count());
     }
 
     public function test_xl_seed_command_multiple_sheet_options()
@@ -254,14 +254,14 @@ class SelectiveWorksheetTest extends TestCase
             'products',
         ];
 
-        $class = Str::of(ClassicModelsSeeder::class)->replace('\\', '\\\\');
+        $class = str_replace('\\', '\\\\', ClassicModelsSeeder::class);
         $this->artisan("xl:seed --class=$class --sheet=offices --sheet=employees");
 
 //        $this->artisan('xl:seed', ['--class' => ClassicModelsSeeder::class, '--sheet' => ['offices', 'employees']]);
 
         $this->assertTableHasExpectedData($testTables);
 
-        foreach ($emptyTables as $table) $this->assertDatabaseCount($table, 0);
+        foreach ($emptyTables as $table) $this->assertEquals(0, \DB::table($table)->count());
     }
 
     public function test_xl_seed_command_single_sheet_argument()
@@ -280,12 +280,12 @@ class SelectiveWorksheetTest extends TestCase
             'products',
         ];
 
-        $class = Str::of(ClassicModelsSeeder::class)->replace('\\', '\\\\');
+        $class = str_replace('\\', '\\\\', ClassicModelsSeeder::class);
         $this->artisan("xl:seed $class offices");
 
         $this->assertTableHasExpectedData($testTables);
 
-        foreach ($emptyTables as $table) $this->assertDatabaseCount($table, 0);
+        foreach ($emptyTables as $table) $this->assertEquals(0, \DB::table($table)->count());
     }
 
     public function test_xl_seed_command_multiple_sheet_arguments()
@@ -304,12 +304,12 @@ class SelectiveWorksheetTest extends TestCase
             'products',
         ];
 
-        $class = Str::of(ClassicModelsSeeder::class)->replace('\\', '\\\\');
+        $class = str_replace('\\', '\\\\', ClassicModelsSeeder::class);
         $this->artisan("xl:seed $class offices employees");
 
         $this->assertTableHasExpectedData($testTables);
 
-        foreach ($emptyTables as $table) $this->assertDatabaseCount($table, 0);
+        foreach ($emptyTables as $table) $this->assertEquals(0, \DB::table($table)->count());
     }
 
     public function test_xl_seed_command_class_hash_option()
@@ -328,7 +328,7 @@ class SelectiveWorksheetTest extends TestCase
             'products',
         ];
 
-        foreach (array_merge($testTables, $emptyTables) as $table) $this->assertDatabaseCount($table, 0);
+        foreach (array_merge($testTables, $emptyTables) as $table) $this->assertEquals(0, \DB::table($table)->count());
 
         $settings = resolve(SpreadsheetSeederSettings::class);
         $settings->file = '/../../../../examples/classicmodels.xlsx';
@@ -336,7 +336,7 @@ class SelectiveWorksheetTest extends TestCase
 
         $this->assertTableHasExpectedData($testTables);
 
-        foreach ($emptyTables as $table) $this->assertDatabaseCount($table, 0);
+        foreach ($emptyTables as $table) $this->assertEquals(0, \DB::table($table)->count());
     }
 
     public function test_xl_seed_command_class_hash_argument()
@@ -355,7 +355,7 @@ class SelectiveWorksheetTest extends TestCase
             'products',
         ];
 
-        foreach (array_merge($testTables, $emptyTables) as $table) $this->assertDatabaseCount($table, 0);
+        foreach (array_merge($testTables, $emptyTables) as $table) $this->assertEquals(0, \DB::table($table)->count());
 
         $settings = resolve(SpreadsheetSeederSettings::class);
         $settings->file = '/../../../../examples/classicmodels.xlsx';
@@ -363,7 +363,7 @@ class SelectiveWorksheetTest extends TestCase
 
         $this->assertTableHasExpectedData($testTables);
 
-        foreach ($emptyTables as $table) $this->assertDatabaseCount($table, 0);
+        foreach ($emptyTables as $table) $this->assertEquals(0, \DB::table($table)->count());
     }
 
     public function test_xl_seed_command_class_spreadsheet_seeder_argument()
@@ -382,7 +382,7 @@ class SelectiveWorksheetTest extends TestCase
             'products',
         ];
 
-        foreach (array_merge($testTables, $emptyTables) as $table) $this->assertDatabaseCount($table, 0);
+        foreach (array_merge($testTables, $emptyTables) as $table) $this->assertEquals(0, \DB::table($table)->count());
 
         $settings = resolve(SpreadsheetSeederSettings::class);
         $settings->file = '/../../../../examples/classicmodels.xlsx';
@@ -390,7 +390,7 @@ class SelectiveWorksheetTest extends TestCase
 
         $this->assertTableHasExpectedData($testTables);
 
-        foreach ($emptyTables as $table) $this->assertDatabaseCount($table, 0);
+        foreach ($emptyTables as $table) $this->assertEquals(0, \DB::table($table)->count());
     }
 
     /**

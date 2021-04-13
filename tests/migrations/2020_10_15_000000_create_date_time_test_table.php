@@ -15,7 +15,7 @@ class CreateDateTimeTestTable extends Migration
     {
         //
         Schema::create('date_time_test', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
             // name,email,email_verified_at,password
             $table->dateTime('excel_format');
             $table->dateTime('unix_format');
