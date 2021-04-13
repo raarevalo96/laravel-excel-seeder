@@ -3,7 +3,6 @@
 
 namespace bfinlay\SpreadsheetSeeder\Writers\Markdown;
 
-use bfinlay\SpreadsheetSeeder\Readers\PhpSpreadsheet\SourceSheet;
 use bfinlay\SpreadsheetSeeder\SpreadsheetSeederSettings;
 use Symfony\Component\Finder\SplFileInfo;
 
