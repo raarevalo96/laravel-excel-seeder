@@ -3,9 +3,9 @@
 
 namespace bfinlay\SpreadsheetSeeder\Writers\Markdown;
 
-use bfinlay\SpreadsheetSeeder\Readers\PhpSpreadsheet\SourceFile;
 use bfinlay\SpreadsheetSeeder\Readers\PhpSpreadsheet\SourceSheet;
 use bfinlay\SpreadsheetSeeder\SpreadsheetSeederSettings;
+use Symfony\Component\Finder\SplFileInfo;
 
 /**
  * Class TextOutputWriter
@@ -39,7 +39,7 @@ use bfinlay\SpreadsheetSeeder\SpreadsheetSeederSettings;
 class TextOutputWriter
 {
     /**
-     * @var SourceFile
+     * @var SplFileInfo
      */
     private $sourceFile;
 
@@ -55,7 +55,12 @@ class TextOutputWriter
 
     private $activeSheetName;
 
-    public function __construct(SourceFile $sourceFile, SpreadsheetSeederSettings $settings = null)
+    /**
+     * TextOutputWriter constructor.
+     * @param SplFileInfo | \SplFileInfo $sourceFile
+     * @param SpreadsheetSeederSettings|null $settings
+     */
+    public function __construct($sourceFile, SpreadsheetSeederSettings $settings = null)
     {
         $this->sourceFile = $sourceFile;
         $this->settings = resolve(SpreadsheetSeederSettings::class);
@@ -65,13 +70,13 @@ class TextOutputWriter
         $this->createTextOutputPath();
     }
 
-    public function openSheet(SourceSheet $sourceSheet)
+    public function openSheet($tableName, $header)
     {
         if (!$this->settings->textOutput) return;
 
-        if (! $this->isSheetActive( $sourceSheet->getTableName() )) {
+        if (! $this->isSheetActive( $tableName )) {
             $this->closeSheet();
-            $this->table = $this->createTextOutputTable($sourceSheet);
+            $this->table = $this->createTextOutputTable($tableName, $header);
         }
     }
 
@@ -123,12 +128,12 @@ class TextOutputWriter
         return new \SplFileObject($filename, 'w');
     }
 
-    private function createTextOutputTable(SourceSheet $sourceSheet)
+    private function createTextOutputTable($tableName, $header)
     {
         return new TextOutputTable(
-            $this->createTextOutputFile($sourceSheet->getTableName()),
-            $sourceSheet->getTableName(),
-            $sourceSheet->getHeader()->rawColumns()
+            $this->createTextOutputFile($tableName),
+            $tableName,
+            $header
         );
     }
 }

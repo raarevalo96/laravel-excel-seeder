@@ -137,6 +137,7 @@ class TextOutputTable
         $this->writeHeader();
         $this->columnWidthsFromRows();
         $this->writeTableRows();
+        unset($this->rows);
     }
 
     public function writeFooter() {
