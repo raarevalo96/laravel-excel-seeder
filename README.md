@@ -26,10 +26,10 @@ This package has been used on CSV files with 5 million rows per file while maint
 This package has PHPUnit tests.  Tests are added as enhancements are made or as bugs are found and fixed.
 
 This package is tested against the following Laravel versions
-* 5.8
-* 6.x
-* 7.x
-* 8.x
+* Laravel 5.8
+* Laravel 6.x
+* Laravel 7.x
+* Laravel 8.x
 
 ## Contents
 - [Installation](#installation)
@@ -48,13 +48,13 @@ This package is tested against the following Laravel versions
 - Or add this package in your composer.json and run `composer update`
 
     ```
-    "bfinlay/laravel-excel-seeder": "~2.0"
+    "bfinlay/laravel-excel-seeder": "^2.0"
     ```
 ## Simplest Usage
 In the simplest form, you can use the `bfinlay\SpreadsheetSeeder\SpreadsheetSeeder`
-as is and it will process all XLSX files in /database/seeds/*.xlsx (relative to Laravel project base path).
+as is and it will process all XLSX files in `/database/seeds/*.xlsx` and `/database/seeders/*.xlsx` (relative to Laravel project base path).
 
-Just add the SpreadsheetSeeder to be called in your /database/seeder/DatabaseSeeder.php class.
+Just add the SpreadsheetSeeder to be called in your `/database/seeds/DatabaseSeeder.php` (Laravel 5.8, 6.x, 7.x) or `/database/seeder/DatabaseSeeder.php` (Laravel 8) class.
 
 ```php
 use Illuminate\Database\Seeder;
@@ -76,7 +76,7 @@ class DatabaseSeeder extends Seeder
 }
 ```
 
-Place your spreadsheets into the path */database/seeds/* of your Laravel project.
+Place your spreadsheets into the path `/database/seeds/` (Laravel 5.8, 6.x, 7.x) or `/database/seeders/` (Laravel 8.x) of your Laravel project.
 
 With the default settings, the seeder makes certain assumptions about the XLSX files:
 * worksheet (tab) names match --> table names in database
@@ -361,7 +361,7 @@ This setting can also be configured to an instance of
 which is a component that is already included with Laravel.
 
 When using Finder, the path is not relative to `base_path()` by default.
-To make the path relative to `base_path()` prepend it to the finder path.  
+To make the path relative to `base_path()` prepend it to the finder path.
 You could also use one of the other [Laravel path helpers](https://laravel.com/docs/8.x/helpers#method-base-path) .
 
 Example:
