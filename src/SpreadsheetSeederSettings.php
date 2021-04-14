@@ -133,7 +133,10 @@ class SpreadsheetSeederSettings
      *  Default: "/database/seeds/*.xlsx"
      * 
      */
-    public $file = "/database/seeds/*.xlsx";
+    public $file = [
+        "/database/seeds/*.xlsx",
+        "/database/seeders/*.xlsx"
+        ];
 
     /*
      * --------------------------------------------------------------------------

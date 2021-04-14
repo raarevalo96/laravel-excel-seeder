@@ -22,8 +22,14 @@ This project was forked from [laravel-csv-seeder](https://github.com/jeroenzwart
 ### Scale
 This package has been used on CSV files with 5 million rows per file while maintaining flat memory usage (no memory leaks).
 
-### Unit Tests
-This package has a unit test suite.  Tests are added as enhancements are made or as bugs are found and fixed.
+### Testing
+This package has PHPUnit tests.  Tests are added as enhancements are made or as bugs are found and fixed.
+
+This package is tested against the following Laravel versions
+* 5.8
+* 6.x
+* 7.x
+* 8.x
 
 ## Contents
 - [Installation](#installation)
@@ -311,13 +317,16 @@ class UsersTableSeeder extends SpreadsheetSeeder
 
 ### Data Source File
 
-`$file` *(string*) or *(array []*)
+`$file` *(string*) or *(array []*) or *(Symfony\Component\Finder\Finder*)
 
 This value is the path of the Excel or CSV file used as the data
 source. This is a string or array[] and is list of files or directories
-to process, which can include wildcards.
+to process, which can include wildcards.  It can also be set to an instance
+of [Symfony Finder](https://symfony.com/doc/current/components/finder.html),
+which is a component that is already included with Laravel.
 
-By default, the seeder will process all XLSX files in /database/seeds.
+By default, the seeder will process all XLSX files in /database/seeds (for Laravel 5.8 - 7.x)
+and /database/seeders (for Laravel 8.x).
 
 The path is specified relative to the root of the project
 
@@ -341,6 +350,40 @@ class UsersTableSeeder extends SpreadsheetSeeder
             '/database/seeds/file2.xlsx',
             '/database/seeds/seed*.xlsx', 
             '/database/seeds/*.csv']; 
+        
+        parent::run();
+    }
+}
+```
+
+This setting can also be configured to an instance of
+[Symfony Finder](https://symfony.com/doc/current/components/finder.html),
+which is a component that is already included with Laravel.
+
+When using Finder, the path is not relative to `base_path()` by default.
+To make the path relative to `base_path()` prepend it to the finder path.  
+You could also use one of the other [Laravel path helpers](https://laravel.com/docs/8.x/helpers#method-base-path) .
+
+Example:
+```php
+use bfinlay\SpreadsheetSeeder\SpreadsheetSeeder;
+
+class UsersTableSeeder extends SpreadsheetSeeder
+{    
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        // specify relative to Laravel project base path
+        $this->file =
+            (new Finder)
+                ->in(base_path() . '/database/seeds/')
+                ->name('*.xlsx')
+                ->notName('*customers*')
+                ->sortByName();
         
         parent::run();
     }
@@ -873,6 +916,11 @@ class UsersTableSeeder extends SpreadsheetSeeder
 ```
 
 #### Retrieving the list of tables seeded
+##### Deprecated
+Postgres Sequence counters are now automatically updated when using Postgres.  `tablesSeeded` is still available.
+
+##### Previous Documentation
+
 The list of tables that were seeded can be retrieved by reading $this->tablesSeeded, 
 which is an array of strings containing the names of the tables that were seeded.
 
@@ -892,6 +940,11 @@ This can be used after seeding to further process tables - for example to reset 
 Laravel Excel Seeder is open-sourced software licensed under the MIT license.
 
 ## Changes
+#### 2.3.0
+- refactor code base to decouple readers and writers and eliminate mediator
+- add ability to set $this->file to an instance of Symfony Finder
+- automatically update Postgres sequence numbers when using Postgres
+- run tests on 5.8, 6.x, 7.x, 8.x, update composer.json, and document
 #### 2.2.0
 - added `xl:seed` command to specify individual sheets as suggested in issue #8
 #### 2.1.15
