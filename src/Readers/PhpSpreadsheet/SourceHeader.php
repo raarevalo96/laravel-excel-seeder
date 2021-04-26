@@ -3,6 +3,7 @@
 
 namespace bfinlay\SpreadsheetSeeder\Readers\PhpSpreadsheet;
 
+use bfinlay\SpreadsheetSeeder\Readers\HeaderImporter;
 use bfinlay\SpreadsheetSeeder\SpreadsheetSeederSettings;
 use PhpOffice\PhpSpreadsheet\Worksheet\Row;
 
@@ -14,9 +15,9 @@ class SourceHeader
     private $sheetRow;
 
     /**
-     * @var boolean
+     * @var HeaderImporter
      */
-    private $isCsv;
+    private $headerImporter;
 
     /**
      * @var SpreadsheetSeederSettings
@@ -28,81 +29,47 @@ class SourceHeader
      *
      * @var string[]
      */
-    private $headerRow;
-
-    /**
-     * Map of post-processed column names to column numbers
-     *
-     * @var int[]
-     */
-    public $columns;
-
-    /**
-     * Sparse array; map of column numbers to post-processed column names
-     *
-     * @ var string[]
-     */
-    public $columnNames;
+    private $rawColumns;
 
     /**
      * Header constructor.
      * @param Row $headerRow
      * @param boolean $isCsv
      */
-    public function __construct(Row $headerRow, $isCsv)
+    public function __construct(Row $headerRow)
     {
         $this->sheetRow = $headerRow;
-        $this->isCsv = $isCsv;
         $this->settings = resolve(SpreadsheetSeederSettings::class);
+        $this->headerImporter = new HeaderImporter();
         $this->makeHeader();
     }
 
     private function makeHeader()
     {
         if (!empty($this->settings->mapping)) {
-            $this->makeMappingHeader();
+            $this->rawColumns = $this->settings->mapping;
         } else {
-            $this->makeSheetHeader();
+            $this->rawColumns = $this->readSheetHeader();
         }
+
+        $this->headerImporter->import($this->rawColumns);
     }
 
-    private function makeMappingHeader() {
-            $this->headerRow = $this->settings->mapping;
-            foreach($this->headerRow as $key => $value) {
-                $this->columns[$value] = $key;
-                $this->columnNames[$key] = $value;
-            }
-    }
+    private function readSheetHeader() {
+        $rawColumns = [];
 
-    private function makeSheetHeader() {
-
-        $cellIterator = $this->sheetRow->getCellIterator();
-
-        foreach ($cellIterator as $cell) {
-            $columnName = $cell->getCalculatedValue();
-            $this->headerRow[] = $columnName;
-            if (!$this->skipColumn($columnName)) {
-                $columnName = $this->columnAlias($columnName);
-                $this->columns[$columnName] = count($this->headerRow) - 1;
-                $this->columnNames[count($this->headerRow) - 1] = $columnName;
-            }
+        foreach ($this->sheetRow->getCellIterator() as $cell) {
+            $rawColumns[] = $cell->getCalculatedValue();
         }
-    }
 
-    private function columnAlias($columnName) {
-        $columnName = isset($this->settings->aliases[$columnName]) ? $this->settings->aliases[$columnName] : $columnName;
-        return $columnName;
-    }
-
-    private function skipColumn($columnName) {
-        return $this->settings->skipper == substr($columnName, 0, strlen($this->settings->skipper));
+        return $rawColumns;
     }
 
     public function toArray() {
-        return $this->columnNames;
+        return $this->headerImporter->toArray();
     }
     
     public function rawColumns() {
-        return $this->headerRow;
+        return $this->rawColumns;
     }
 }
