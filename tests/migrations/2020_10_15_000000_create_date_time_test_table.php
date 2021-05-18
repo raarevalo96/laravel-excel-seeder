@@ -21,6 +21,7 @@ class CreateDateTimeTestTable extends Migration
             $table->dateTime('unix_format');
             $table->dateTime('string_format_1');
             $table->dateTime('string_format_2');
+            $table->text('test');
 
             $table->timestamps();
         });

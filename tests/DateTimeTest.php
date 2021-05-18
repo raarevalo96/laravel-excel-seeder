@@ -25,7 +25,7 @@ class DateTimeTest extends TestCase
     /**
      * Define environment setup.
      *
-     * @param  \Illuminate\Foundation\Application  $app
+     * @param \Illuminate\Foundation\Application $app
      * @return void
      */
     protected function getEnvironmentSetUp($app)
@@ -33,9 +33,9 @@ class DateTimeTest extends TestCase
         // Setup default database to use sqlite :memory:
         $app['config']->set('database.default', 'testbench');
         $app['config']->set('database.connections.testbench', [
-            'driver'   => 'sqlite',
+            'driver' => 'sqlite',
             'database' => ':memory:',
-            'prefix'   => '',
+            'prefix' => '',
         ]);
     }
 
@@ -84,13 +84,37 @@ class DateTimeTest extends TestCase
      */
     public function test_date_formats()
     {
+        $startSeedDate = date('Y-m-d H:i:s.u');
         $this->seed(DateTimeSeeder::class);
 
-        $row = \DB::table('date_time_test')->first();
+        $rows = \DB::table('date_time_test')->get();
+        $fetchRowsDate = date('Y-m-d H:i:s.u');
+
+        $row = $rows[0];
         $this->assertEquals((new Carbon('October 15 2020 23:37')), new Carbon($row->excel_format));
         $this->assertEquals((new Carbon('October 16 2020 04:37:09')), new Carbon($row->unix_format));
         $this->assertEquals((new Carbon('October 04 2020 05:31:02.44')), new Carbon($row->string_format_1));
         $this->assertEquals((new Carbon('October 15 2020')), new Carbon($row->string_format_2));
-    }
+        $this->assertGreaterThanOrEqual(new Carbon($startSeedDate), new Carbon($row->created_at));
+        $this->assertLessThanOrEqual(new Carbon($fetchRowsDate), new Carbon($row->created_at));
+        $this->assertGreaterThanOrEqual(new Carbon($startSeedDate), new Carbon($row->updated_at));
+        $this->assertLessThanOrEqual(new Carbon($fetchRowsDate), new Carbon($row->updated_at));
 
+        $columns = ["excel_format", "unix_format", "string_format_1", "string_format_2", "created_at", "updated_at"];
+
+        // empty cells
+        $row = $rows[1];
+        foreach($columns as $column) {
+            $this->assertGreaterThanOrEqual(new Carbon($startSeedDate), new Carbon($row->{$column}));
+            $this->assertLessThanOrEqual(new Carbon($fetchRowsDate), new Carbon($row->{$column}));
+        }
+
+        // explicit 'null' cells
+        // TODO determine if these should be null instead of default dates
+        $row = $rows[2];
+        foreach($columns as $column) {
+            $this->assertGreaterThanOrEqual(new Carbon($startSeedDate), new Carbon($row->{$column}));
+            $this->assertLessThanOrEqual(new Carbon($fetchRowsDate), new Carbon($row->{$column}));
+        }
+    }
 }

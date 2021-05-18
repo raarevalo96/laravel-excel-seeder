@@ -46,13 +46,13 @@ class RowImporter
 
     public function import(array $row)
     {
-        $importedRow = [];
+        $this->rowArray = [];
 
         foreach($row as $columnIndex => $value) {
             if (isset($this->columnNames[$columnIndex])) {
                 if (!is_null($value)) $this->nullRow = false;
                 $columnName = $this->columnNames[$columnIndex];
-                $importedRow[$columnName] = $this->transformValue($columnName, $value);
+                $this->rowArray[$columnName] = $this->transformValue($columnName, $value);
             }
         }
 
@@ -60,7 +60,7 @@ class RowImporter
             $this->addTimestamps();
         }
 
-        return $importedRow;
+        return $this->rowArray;
     }
 
     public function isValid() {

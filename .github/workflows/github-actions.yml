@@ -1,19 +1,22 @@
-name: PHP Composer
+name: PHPUnit tests
 
 on:
   push:
-    branches: [ $default-branch ]
   pull_request:
-    branches: [ $default-branch ]
 
 jobs:
-  build:
-
+  build-test:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
+
       - uses: php-actions/composer@v5
+
       - name: PHPUnit tests
         uses: php-actions/phpunit@v2
+        with:
+          bootstrap: vendor/autoload.php
+          args: --no-configuration tests
+
       

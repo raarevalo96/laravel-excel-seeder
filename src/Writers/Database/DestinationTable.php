@@ -205,7 +205,7 @@ class DestinationTable
 
         // if column is date or time type return
         if ($this->isDateColumn($column)) {
-            if ($this->settings->timestamps) return date('Y-m-d H:i:s');
+            if ($this->settings->timestamps) return date('Y-m-d H:i:s.u');
             else return 0;
         }
 
