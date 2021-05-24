@@ -1,5 +1,5 @@
 # Excel Seeder for Laravel
-[![PHPUnit tests](https://github.com/bfinlay/laravel-excel-seeder/actions/workflows/github-actions.yml/badge.svg)](https://github.com/bfinlay/laravel-excel-seeder/actions/workflows/github-actions.yml)
+[![PHPUnit tests](https://github.com/bfinlay/laravel-excel-seeder/actions/workflows/github-actions.yml/badge.svg?branch=master)](https://github.com/bfinlay/laravel-excel-seeder/actions/workflows/github-actions.yml)
 > #### Seed your database using CSV files, XLSX files, and more with Laravel
 
 With this package you can save time seeding your database. Instead of typing out seeder files, you can use CSV, XLSX, or any supported spreadsheet file format to load your project's database. There are configuration options available to control the insertion of data from your spreadsheet files.
@@ -26,7 +26,7 @@ This package has been used on CSV files with 5 million rows per file while maint
 ### Testing
 This package has PHPUnit tests run automatically by Github Actions.  Tests are added as enhancements are made or as bugs are found and fixed.
 
-[![PHPUnit tests](https://github.com/bfinlay/laravel-excel-seeder/actions/workflows/github-actions.yml/badge.svg)](https://github.com/bfinlay/laravel-excel-seeder/actions/workflows/github-actions.yml)
+[![PHPUnit tests](https://github.com/bfinlay/laravel-excel-seeder/actions/workflows/github-actions.yml/badge.svg?branch=master)](https://github.com/bfinlay/laravel-excel-seeder/actions/workflows/github-actions.yml)  
 This package is tested against the following Laravel versions
 * Laravel 5.8
 * Laravel 6.x
