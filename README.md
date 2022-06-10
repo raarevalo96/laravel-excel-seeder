@@ -64,7 +64,7 @@ constraint will not be resolved by composer when installing a child package.  Ho
 an additional dependency.
 
 Note that Laravel 5.8 and 7.x are EOL, and Laravel 6 will become EOL on Sep 6, 2022.  See https://laravelversions.com/en.
-These versions will continue to be supported by this package for now.
+These versions will continue to be supported by this package for as long as reasonably possible, thanks to github actions performing the testing.
 
 To install for Laravel 5.8, 6.x, and 7.x:
 - Require this package directly by `composer require --dev bfinlay/laravel-excel-seeder`
@@ -946,35 +946,19 @@ class UsersTableSeeder extends SpreadsheetSeeder
 }
 ```
 
-#### Retrieving the list of tables seeded
-##### Deprecated
-Postgres Sequence counters are now automatically updated when using Postgres.  `tablesSeeded` is still available.
+#### Postgres Sequence Counters
+When using Postgres, Excel Seeder for Laravel will automatically update Postgres sequence counters for auto-incrementing id columns.
 
-##### Previous Documentation
-
-The list of tables that were seeded can be retrieved by reading $this->tablesSeeded, 
-which is an array of strings containing the names of the tables that were seeded.
-
-This can be used after seeding to further process tables - for example to reset id sequence numbers in postgres
-```php
-    public function updatePostgresSeqCounters() {
-        $tables = $this->tablesSeeded;
-        foreach($tables as $table) {
-            if (DB::connection()->getSchemaBuilder()->hasColumn($table, 'id')) {
-                $return = DB::select("select setval('{$table}_id_seq', max(id)) from {$table}");
-            }
-        }
-    }
-```
+MySQL automatically handles the sequence counter for its auto-incrementing columns.
 
 ## License
-Laravel Excel Seeder is open-sourced software licensed under the MIT license.
+Excel Seeder for Laravel is open-sourced software licensed under the MIT license.
 
 ## Changes
 #### 3.0.0
 - update composer.json to add support for Laravel 9.x and `doctrine\dbal` 3.x
 - See [Installation](#installation) for new instructions to require DBAL 2.x package for Laravel 5.8, 6.x, 7.x legacy versions.
-- Updated to 3.0.0 because DBAL update breaks backward compatibility.
+- Updated to 3.0.0 because DBAL update breaks backward compatibility of [Installation](#installation) process by requiring DBAL 2.x package for Laravel 5.8, 6.x, 7.x legacy versions.
 #### 2.3.1
 - fix bug #10 (contributed by @tezu35)
 - add date time test cases pertaining to #10
