@@ -206,6 +206,8 @@ You will have to merge the XLSX spreadsheet manually.
 
 TextOutput can be disabled by setting `textOutput` to `FALSE`
 
+See [Text Output](#text-output) for more information.
+
 ## Configuration
 * [Aliases](#column-aliases) - (global) map column names to alternative column names
 * [Batch Insert Size](#batch-insert-size) - number of rows to insert per batch
