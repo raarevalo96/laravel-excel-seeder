@@ -143,17 +143,18 @@ class UsersTableSeeder extends SpreadsheetSeeder
      *
      * @return void
      */
-    public function run()
+    public function settings(SpreadsheetSeederSettings $set)
     {
         // By default, the seeder will process all XLSX files in /database/seeds/*.xlsx (relative to Laravel project base path)
         
         // Example setting
-        $this->worksheetTableMapping = ['Sheet1' => 'first_table', 'Sheet2' => 'second_table'];
-        
-        parent::run();
+        $set->worksheetTableMapping = ['Sheet1' => 'first_table', 'Sheet2' => 'second_table'];
     }
 }
 ```
+
+note: the older process of overloading `run()` still works for backwards compatibility.
+
 ## Seeding Individual Sheets
 By default, executing the `db:seed` Artisan command will seed all worksheets within a workbook.
 
@@ -188,20 +189,20 @@ php artisan xl:seed # users posts
 Important note: as with seeding traditional seeder classes individually, when seeding individual sheets if the truncate option is true,
 relations with cascade delete will also be deleted.
 
-## Excel Text Markdown Output for Branch Diffs
+## Excel Text Output for Branch Diffs
 After running the database seeder, a subdirectory will be created using
 the same name as the input file.  A text output file will be created
-for each worksheet using the worksheet name with an "md"
-extension.  This text file contains a markdown text representation of each
+for each worksheet using the worksheet name.  This text file contains a text-based representation of each
 worksheet (tab) in the workbook and can be used to determine
 changes in the XLSX when merging branches from other contributors.
+
+Two formats are currently supported.   The older format is 'markdown' and is the defualt for backward compatibility.
+The newer format is 'yaml' which is meant to work better with typical line-oriented diff software.
 
 Check this file into the repository so that it can serve as a basis for
 comparison.
 
 You will have to merge the XLSX spreadsheet manually.
-
-The file extension can be changed by setting the `textOutputFileExtension` setting.
 
 TextOutput can be disabled by setting `textOutput` to `FALSE`
 
@@ -224,7 +225,6 @@ TextOutput can be disabled by setting `textOutput` to `FALSE`
 * [Skipper](#skipper) - (global) prefix string to indicate a column or worksheet should be skipped (default: "%")
 * [Tablename](#destination-table-name) - (legacy) table name to insert into database for single-sheet file
 * [Text Output](#text-output) - enable text markdown output (default: true)
-* [Text Output File Extension](#text-output-file-extension) - extension for text output table
 * [Timestamps](#timestamps) - when true, set the Laravel timestamp columns 'created_at' and 'updated_at' with current date/time (default: true)
 * [Truncate](#truncate-destination-table) - truncate the table before seeding (default: true)
 * [Truncate Ignore Foreign Key Constraints](#truncate-ignore-foreign) - truncate the table before seeding (default: true)
@@ -596,18 +596,16 @@ class UsersTableSeeder extends SpreadsheetSeeder
 ```
 
 ### Text Output
-`$textOutput` *(boolean)*
+`$textOutput` *(boolean)* or *(string*) or *(array []*)
 
-Set to false to disable output of textual markdown tables.
+
+* Set to false to disable output of textual markdown tables.
+* `true` defaults to `'markdown'` output for backward compatibility.
+* `'markdown'` for markdown output
+* `'yaml'` for yaml output
+* `['markdown', 'yaml']` for both markdown and yaml output
 
 Default: `TRUE`
-
-### Text Output File Extension
-`$textOutputFileExtension` *(string)*
-
-Extension for textual markdown tables.
-
-Default: `md`
 
 ### Timestamps
 `$timestamps` *(string/boolean TRUE)*
