@@ -39,7 +39,7 @@ This package is tested against the following Laravel versions
 - [Simplest Usage](#simplest-usage)
 - [Basic Usage](#basic-usage)
 - [Seeding Individual Sheets](#seeding-individual-sheets)
-- [Markdown Diffs](#excel-text-markdown-output-for-branch-diffs)
+- [Markdown Diffs](#excel-text-output-for-branch-diffs)
 - [Configuration Settings](#configuration)
 - [Conversion Details](#details)
 - [Examples](#examples)
@@ -328,20 +328,19 @@ class UsersTableSeeder extends SpreadsheetSeeder
      *
      * @return void
      */
-    public function run()
+     
+    public function settings(SpreadsheetSeederSettings $set)
     {
         // specify relative to Laravel project base path
         // feature directories specified
-        $this->file = [
+        $set->file = [
             '/database/seeds/feature1', 
             '/database/seeds/feature2',
             '/database/seeds/feature3', 
             ]; 
         
         // process all xlsx and csv files in paths specified above
-        $this->extension = ['xlsx', 'csv'];
-        
-        parent::run();
+        $set->extension = ['xlsx', 'csv'];        
     }
 }
 ```
@@ -373,16 +372,14 @@ class UsersTableSeeder extends SpreadsheetSeeder
      *
      * @return void
      */
-    public function run()
+    public function settings(SpreadsheetSeederSettings $set)
     {
         // specify relative to Laravel project base path
-        $this->file = [
+        $set->file = [
             '/database/seeds/file1.xlsx', 
             '/database/seeds/file2.xlsx',
             '/database/seeds/seed*.xlsx', 
             '/database/seeds/*.csv']; 
-        
-        parent::run();
     }
 }
 ```
@@ -406,17 +403,15 @@ class UsersTableSeeder extends SpreadsheetSeeder
      *
      * @return void
      */
-    public function run()
+    public function settings(SpreadsheetSeederSettings $set)
     {
         // specify relative to Laravel project base path
-        $this->file =
+        $set->file =
             (new Finder)
                 ->in(base_path() . '/database/seeds/')
                 ->name('*.xlsx')
                 ->notName('*customers*')
                 ->sortByName();
-        
-        parent::run();
     }
 }
 ```
@@ -478,13 +473,11 @@ class SalesTableSeeder extends SpreadsheetSeeder
      *
      * @return void
      */
-    public function run()
+    public function settings(SpreadsheetSeederSettings $set)
     {
-        $this->file = '/database/seeds/sales.xlsx';
+        $set->file = '/database/seeds/sales.xlsx';
         if (App::environment('local'))
-            $this->limit = 10000;
-        
-        parent::run();
+            $set->limit = 10000;
     }
 }
 ```
@@ -578,19 +571,17 @@ class UsersTableSeeder extends SpreadsheetSeeder
      *
      * @return void
      */
-    public function run()
+    public function settings(SpreadsheetSeederSettings $set)
     {
         // specify relative to Laravel project base path
         // specify filename that is automatically dumped from an external process
-        $this->file = '/database/seeds/autodump01234456789.xlsx';  // note: could alternatively be a csv
+        $set->file = '/database/seeds/autodump01234456789.xlsx';  // note: could alternatively be a csv
         
         // specify the table this is loaded into
-        $this->tablename = 'sales';
+        $set->tablename = 'sales';
         
         // in this example, table truncation also needs to be disabled so previous sales records are not deleted
-        $this->truncate = false;
-        
-        parent::run();
+        $set->truncate = false;
     }
 }
 ```
@@ -709,15 +700,13 @@ class UsersTableSeeder extends SpreadsheetSeeder
      *
      * @return void
      */
-    public function run()
+    public function settings(SpreadsheetSeederSettings $set)
     {
         // specify the table this is loaded into
-        $this->worksheetTableMapping = [
+        $set->worksheetTableMapping = [
             'first_table_name_abbreviated' => 'really_rather_very_super_long_first_table_name', 
             'second_table_name_abbreviated' => 'really_rather_very_super_long_second_table_name'
             ];
-        
-        parent::run();
     }
 }
 ```
@@ -750,13 +739,11 @@ class UsersTableSeeder extends SpreadsheetSeeder
      *
      * @return void
      */
-    public function run()
+    public function settings(SpreadsheetSeederSettings $set)
     {
-        $this->file = '/database/seeds/csvs/users.csv';
-        $this->tablename = 'email_users';
-        $this->timestamps = '1970-01-01 00:00:00';
-        
-        parent::run();
+        $set->file = '/database/seeds/csvs/users.csv';
+        $set->tablename = 'email_users';
+        $set->timestamps = '1970-01-01 00:00:00';
     }
 }
 ```
@@ -792,13 +779,11 @@ class UsersTableSeeder extends SpreadsheetSeeder
      *
      * @return void
      */
-    public function run()
+    public function settings(SpreadsheetSeederSettings $set)
     {
-        $this->file = '/database/seeds/users.xlsx';
-        $this->mapping = ['id', 'firstname', 'lastname'];
-        $this->header = FALSE;
-        
-        parent::run();
+        $set->file = '/database/seeds/users.xlsx';
+        $set->mapping = ['id', 'firstname', 'lastname'];
+        $set->header = FALSE;
     }
 }
 ```
@@ -824,13 +809,11 @@ class UsersTableSeeder extends SpreadsheetSeeder
      *
      * @return void
      */
-    public function run()
+    public function settings(SpreadsheetSeederSettings $set)
     {
-        $this->file = '/database/seeds/csvs/users.csv';
-        $this->aliases = ['csvColumnName' => 'table_column_name', 'foo' => 'bar'];
-        $this->defaults = ['created_by' => 'seeder', 'updated_by' => 'seeder'];
-        
-        parent::run();
+        $set->file = '/database/seeds/csvs/users.csv';
+        $set->aliases = ['csvColumnName' => 'table_column_name', 'foo' => 'bar'];
+        $set->defaults = ['created_by' => 'seeder', 'updated_by' => 'seeder'];
     }
 }
 ```
@@ -860,12 +843,10 @@ class UsersTableSeeder extends SpreadsheetSeeder
      *
      * @return void
      */
-    public function run()
+    public function settings(SpreadsheetSeederSettings $set)
     {
-        $this->file = '/database/seeds/users.xlsx';
-        $this->skipper = 'skip:';
-        
-        parent::run();
+        $set->file = '/database/seeds/users.xlsx';
+        $set->skipper = 'skip:';
     }
 }
 ```
@@ -884,15 +865,13 @@ class UsersTableSeeder extends SpreadsheetSeeder
      *
      * @return void
      */
-    public function run()
+    public function settings(SpreadsheetSeederSettings $set)
     {
-        $this->file = '/database/seeds/users.xlsx';
-        $this->validate = [ 'name'              => 'required',
+        $set->file = '/database/seeds/users.xlsx';
+        $set->validate = [ 'name'              => 'required',
                             'email'             => 'email',
                             'email_verified_at' => 'date_format:Y-m-d H:i:s',
                             'password'          => ['required', Rule::notIn([' '])]];
-        
-        parent::run();
     }
 }
 ```
@@ -909,12 +888,10 @@ class UsersTableSeeder extends SpreadsheetSeeder
      *
      * @return void
      */
-    public function run()
+    public function settings(SpreadsheetSeederSettings $set)
     {
-        $this->file = '/database/seeds/users.xlsx';
-        $this->hashable = ['password'];
-        
-        parent::run();
+        $set->file = '/database/seeds/users.xlsx';
+        $set->hashable = ['password'];
     }
 }
 ```
@@ -933,13 +910,11 @@ class UsersTableSeeder extends SpreadsheetSeeder
      *
      * @return void
      */
-    public function run()
+    public function settings(SpreadsheetSeederSettings $set)
     {
-        $this->file = '/database/seeds/users.xlsx';
-        $this->inputEncodings = ['UTF-8', 'ISO-8859-1'];
-        $this->outputEncoding = 'UTF-8';
-        
-        parent::run();
+        $set->file = '/database/seeds/users.xlsx';
+        $set->inputEncodings = ['UTF-8', 'ISO-8859-1'];
+        $set->outputEncoding = 'UTF-8';
     }
 }
 ```
@@ -953,6 +928,11 @@ MySQL automatically handles the sequence counter for its auto-incrementing colum
 Excel Seeder for Laravel is open-sourced software licensed under the MIT license.
 
 ## Changes
+#### 3.1.0
+- Add YAML [text output](#excel-text-output-for-branch-diffs) as an alternative to markdown, which is intended to work better with line-oriented diff editors
+- Improve [settings configuration](#basic-usage) by adding settings method that passes the settings object and supports code completion,
+instead of overriding run method and using magic methods that prevent code completion.
+Original method is still supported for backward compatibility.
 #### 3.0.0
 - update composer.json to add support for Laravel 9.x and `doctrine\dbal` 3.x
 - See [Installation](#installation) for new instructions to require DBAL 2.x package for Laravel 5.8, 6.x, 7.x legacy versions.
