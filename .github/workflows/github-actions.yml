@@ -35,6 +35,7 @@ jobs:
       matrix: ${{ steps.output_data.outputs.matrix }}
 
   build-and-test:
+    name: Test (php, laravel ,dbal)
     needs: provide_php_versions_json
     strategy:
       fail-fast: false
