@@ -25,7 +25,7 @@
 	"require-dev": {
 		"orchestra/testbench": "*",
 		"bfinlay/laravel-excel-seeder-test-data": "=2.3.1",
-		"symplify/easy-ci": "*"
+		"symplify/easy-ci": "11.1.5"
 	},
 	"autoload": {
 		"psr-4": {
