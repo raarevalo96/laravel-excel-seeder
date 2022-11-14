@@ -223,6 +223,7 @@ See [Text Output](#text-output) for more information.
 * [Mapping](#column-mapping) - column "mapping"; array of column names to use as a header
 * [Offset](#offset) - (global) number of rows to skip at the start of the data source (default: 0)
 * [Output Encodings](#output-encodings) - (global) output encoding to database
+* [Parsers]($parsers) - (global) associative array of column names in the data source that should be parsed with the specified parser.
 * [Read Chunk Size](#read-chunk-size) - number of rows to read per chunk
 * [Skipper](#skipper) - (global) prefix string to indicate a column or worksheet should be skipped (default: "%")
 * [Tablename](#destination-table-name) - (legacy) table name to insert into database for single-sheet file
@@ -525,6 +526,26 @@ See [https://www.php.net/manual/en/mbstring.supported-encodings.php](https://www
 This value is used as the "to_encoding" parameter to mb_convert_encoding.
 
 Default: `UTF-8`
+
+### Parsers
+`$parsers` *(array ['column' => function($value) {}])*
+
+This is an associative array of column names in the data source that should be parsed
+with the specified parser.
+
+Note: this setting is currently global and applies to all files or
+worksheets that are processed.  All columns with the specified name in all files
+or worksheets will have hashing applied.  To apply differently to
+different files, process files with separate Seeder instances.
+
+Example: 
+```php
+['email' => function ($value) {
+     return strtolower($value);
+}];
+```
+
+Default: []
 
 ### Read Chunk Size
 `$readChunkSize` *(integer)*
@@ -930,6 +951,8 @@ MySQL automatically handles the sequence counter for its auto-incrementing colum
 Excel Seeder for Laravel is open-sourced software licensed under the MIT license.
 
 ## Changes
+#### 3.2.0
+- add [parsers](#parsers) setting that enables closures to be run on columns 
 #### 3.1.0
 - Add YAML [text output](#excel-text-output-for-branch-diffs) as an alternative to markdown, which is intended to work better with line-oriented diff editors
 - Improve [settings configuration](#basic-usage) by adding settings method that passes the settings object and supports code completion,
