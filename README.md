@@ -223,7 +223,7 @@ See [Text Output](#text-output) for more information.
 * [Mapping](#column-mapping) - column "mapping"; array of column names to use as a header
 * [Offset](#offset) - (global) number of rows to skip at the start of the data source (default: 0)
 * [Output Encodings](#output-encodings) - (global) output encoding to database
-* [Parsers]($parsers) - (global) associative array of column names in the data source that should be parsed with the specified parser.
+* [Parsers](#parsers) - (global) associative array of column names in the data source that should be parsed with the specified parser.
 * [Read Chunk Size](#read-chunk-size) - number of rows to read per chunk
 * [Skipper](#skipper) - (global) prefix string to indicate a column or worksheet should be skipped (default: "%")
 * [Tablename](#destination-table-name) - (legacy) table name to insert into database for single-sheet file
