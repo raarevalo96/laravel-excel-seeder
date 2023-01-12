@@ -30,9 +30,13 @@ abstract class TestCase extends OrchestraTestCase
         // Setup default database to use sqlite :memory:
         $app['config']->set('database.default', 'testbench');
         $app['config']->set('database.connections.testbench', [
-            'driver'   => 'sqlite',
-            'database' => ':memory:',
+            'driver'   => env('DB_CONNECTION', 'sqlite'),
+            'database' => env('DB_DATABASE', ':memory:'),
             'prefix'   => '',
+            'host' =>  env('DB_HOST', '127.0.0.1'),
+            'port' =>  env('DB_PORT', ''),
+            'username' => env('DB_USERNAME', 'root'),
+            'password' => env('DB_PASSWORD', 'password'),
         ]);
     }
 

@@ -19,7 +19,7 @@ class CreateDateTimeTestTable extends Migration
             // name,email,email_verified_at,password
             $table->dateTime('excel_format');
             $table->dateTime('unix_format');
-            $table->dateTime('string_format_1');
+            $table->dateTime('string_format_1',3);
             $table->dateTime('string_format_2');
             $table->text('test');
 
