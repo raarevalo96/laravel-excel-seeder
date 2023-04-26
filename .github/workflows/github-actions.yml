@@ -80,6 +80,8 @@ jobs:
           dependency-versions: "highest"
           composer-options: "--with laravel/framework:${{ matrix.laravel }} --with doctrine/dbal:${{ matrix.dbal }}"
 
+      - name: Document composer.lock
+        run: cat composer.lock
       - name: Create Database Containers
         uses: nick-fields/retry@v2
         with:
