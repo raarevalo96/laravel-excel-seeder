@@ -80,6 +80,11 @@ jobs:
           dependency-versions: "highest"
           composer-options: "--with laravel/framework:${{ matrix.laravel }} --with doctrine/dbal:${{ matrix.dbal }}"
 
+      - name: Upload artifact composer.lock
+        uses: actions/upload-artifact@v3
+        with:
+          name: composer.lock-php${{ matrix.php }}-laravel${{ matrix.laravel }}-dbal${{ matrix.dbal }}.json
+          path: composer.lock
       - name: Create Database Containers
         uses: nick-fields/retry@v2
         with:
