@@ -77,9 +77,10 @@ class SpreadsheetSeederServiceProvider extends ServiceProvider
 
     protected function getMySqlConnectionClass()
     {
+        $phpversion = explode("-", phpversion());
         if (
             Semver::satisfies(app()->version(), "^6.0|^7.0|^8.0") &&
-            Semver::satisfies(phpversion(), "^8.0")
+            Semver::satisfies($phpversion[0], "^8.0")
         )
             return RefreshDatabaseMySqlConnection::class;
 
