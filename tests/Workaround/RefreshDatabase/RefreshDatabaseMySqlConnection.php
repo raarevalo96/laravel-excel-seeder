@@ -8,6 +8,8 @@ class RefreshDatabaseMySqlConnection extends BaseMySqlConnection
 {
     /**
      * Perform a rollback within the database.
+     * This method is the Laravel 9.x implementation, which fixes a conflict with using the RefreshDatabase trait during testing.
+     * Laravel 6.x, 7.x, 8.x fail testing on PHP 8.x with the default implementation.
      *
      * @param  int  $toLevel
      * @return void
