@@ -4,7 +4,7 @@ namespace bfinlay\SpreadsheetSeeder;
 
 use bfinlay\SpreadsheetSeeder\Console\SeedCommand;
 use bfinlay\SpreadsheetSeeder\Support\StrMacros;
-use bfinlay\SpreadsheetSeeder\Tests\Workaround\RefreshDatabase\RefreshDatabaseMySqlConnection;
+use bfinlay\SpreadsheetSeeder\Support\Workaround\RefreshDatabase\RefreshDatabaseMySqlConnection;
 use Composer\Semver\Semver;
 use Illuminate\Database\Connection;
 use Illuminate\Database\MySqlConnection;
@@ -79,6 +79,7 @@ class SpreadsheetSeederServiceProvider extends ServiceProvider
     {
         $phpversion = explode("-", phpversion());
         if (
+            app()->runningUnitTests() &&
             Semver::satisfies(app()->version(), "^6.0|^7.0|^8.0") &&
             Semver::satisfies($phpversion[0], "^8.0")
         )
