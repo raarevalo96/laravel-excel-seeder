@@ -49,7 +49,7 @@ This package is tested against the following Laravel versions
 
 ## Installation
 ### Laravel 8.x, 9.x, 10.x
-- Require this package directly by `composer require --dev bfinlay/laravel-excel-seeder`
+- Require this package directly by `composer require --dev -W bfinlay/laravel-excel-seeder`
 - Or add this package in your composer.json and run `composer update`
 
   ```
@@ -68,8 +68,8 @@ Note that Laravel 5.8, 6.x, 7.x, and 8.x are EOL.  See https://laravelversions.c
 These versions will continue to be supported by this package for as long as reasonably possible, thanks to github actions performing the testing.
 
 To install for Laravel 5.8, 6.x, and 7.x:
-- Require this package directly by `composer require --dev bfinlay/laravel-excel-seeder`
-- Require the dbal package directly by `composer require --dev doctrine/dbal:^2.6`
+- Require this package directly by `composer require --dev -W bfinlay/laravel-excel-seeder`
+- Require the dbal package directly by `composer require --dev -W doctrine/dbal:^2.6`
 - Or add these packages in your composer.json and run `composer update`
 
   ```
