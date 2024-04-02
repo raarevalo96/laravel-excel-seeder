@@ -211,6 +211,7 @@ TextOutput can be disabled by setting `textOutput` to `FALSE`
 See [Text Output](#text-output) for more information.
 
 ## Configuration
+* [Add Columns](#add-columns) - array of column names that will be added in addition to those found in the worksheet
 * [Aliases](#column-aliases) - (global) map column names to alternative column names
 * [Batch Insert Size](#batch-insert-size) - number of rows to insert per batch
 * [Date Formats](#date-formats) - configure date formats by column when Carbon cannot automatically parse date
@@ -228,25 +229,38 @@ See [Text Output](#text-output) for more information.
 * [Parsers](#parsers) - (global) associative array of column names in the data source that should be parsed with the specified parser.
 * [Read Chunk Size](#read-chunk-size) - number of rows to read per chunk
 * [Skipper](#skipper) - (global) prefix string to indicate a column or worksheet should be skipped (default: "%")
+* [Skip Columns](#skip-columns) - array of column names that will be skipped in the worksheet.
+* [Skip Sheets](#skip-sheets) - array of worksheet names that will be skipped in the workbook.
 * [Tablename](#destination-table-name) - (legacy) table name to insert into database for single-sheet file
 * [Text Output](#text-output) - enable text markdown output (default: true)
+* [Text Output Path](#text-output-path) - path for text output
 * [Timestamps](#timestamps) - when true, set the Laravel timestamp columns 'created_at' and 'updated_at' with current date/time (default: true)
 * [Truncate](#truncate-destination-table) - truncate the table before seeding (default: true)
 * [Truncate Ignore Foreign Key Constraints](#truncate-ignore-foreign) - truncate the table before seeding (default: true)
 * [Unix Timestamps](#unix-timestamps) - interpret date/time values as unix timestamps instead of excel timestamps for specified columns (default: no columns)
+* [UUID](#uuid) - array of column names that the seeder will generate a UUID for.
 * [Validate](#validate) - map column names to laravel validation rules
 * [Worksheet Table Mapping](#worksheet-table-mapping) - map names of worksheets to table names
+
+### Add Columns
+`$addColumns` *(array [])*
+
+This is an array of column names that will be column names in addition to
+those found in the worksheet.
+
+These additional columns will be processed the same ways as columns found
+in a worksheet.  Cell values will be considered the same way as "empty" cells
+in the worksheet.  These columns could be populated by parsers, defaults, or uuids.
+
+Example: ['uuid, 'column1', 'column2']
+
+Default: []
 
 ### Column Aliases
 `$aliases` *(array [])*
 
 This is an associative array to map the column names of the data source
 to alternative column names (aliases).
-
-Note: this setting is currently global and applies to all files or
-worksheets that are processed.  All columns with the same name in all files
-or worksheets will have the same alias applied.  To apply differently to
-different files, process files with separate Seeder instances.
 
 Example: `['CSV Header 1' => 'Table Column 1', 'CSV Header 2' => 'Table Column 2']`
 
@@ -279,11 +293,6 @@ Carbon will use the date format string instead of parsing automatically.
 If column mapping is used (see [mapping](#mapping)) the column name should match the
 value in the $mapping array instead of the value in the file, if any.
 
-Note: this setting is currently global and applies to all files or
-worksheets that are processed.  All columns with the specified name in all files
-or worksheets will have the validation rule applied.  To apply differently to
-different files, process files with separate Seeder instances.
-
 Example:
 ```
 [
@@ -298,10 +307,6 @@ Default: `[]`
 
 This is an associative array mapping column names in the data source to
 default values that will override any values in the datasource.
-
-Note: this setting is currently global and applies to all files or
-worksheets that are processed.  To apply differently to
-different files, process files with separate Seeder instances.
 
 Example: `['created_by' => 'seed', 'updated_by' => 'seed]`
 
@@ -430,11 +435,6 @@ using Laravel's `Hash` facade.
 The hashing algorithm is configured in `config/hashing.php` per
 [https://laravel.com/docs/master/hashing](https://laravel.com/docs/master/hashing)
 
-Note: this setting is currently global and applies to all files or
-worksheets that are processed.  All columns with the specified name in all files
-or worksheets will have hashing applied.  To apply differently to
-different files, process files with separate Seeder instances.
-
 Example: `['password']`
 
 Default: `[]`
@@ -503,9 +503,6 @@ This allows existing headers in a CSV file to be overridden.
 This is called "Mapping" because its intended use is to map the fields of
 a CSV file without a header line to the columns of a database table.
 
-Note: this setting is currently global and applies to all files or
-worksheets that are processed.  To apply differently to different files,
-process files with separate Seeder instances.
 
 Example: `['Header Column 1', 'Header Column 2']`
 
@@ -534,11 +531,6 @@ Default: `UTF-8`
 
 This is an associative array of column names in the data source that should be parsed
 with the specified parser.
-
-Note: this setting is currently global and applies to all files or
-worksheets that are processed.  All columns with the specified name in all files
-or worksheets will have hashing applied.  To apply differently to
-different files, process files with separate Seeder instances.
 
 Example: 
 ```php
@@ -570,6 +562,30 @@ multi-character string.
 - Example: Worksheet `%worksheet1` will be skipped with skipper set as `%`
 
 Default: `"%"`;
+
+### Skip Columns
+`$skipColumns` *(array [])*
+
+This is an array of column names that will be skipped in the worksheet.
+
+This can be used to skip columns in the same way as the skipper character, but 
+without modifying the worksheet.
+
+Example: ['column1', 'column2']
+
+Default: []
+
+### Skip Sheets
+`$skipSheets` *(array [])*
+
+This is an array of worksheet names that will be skipped in the workbook.
+
+This can be used to skip worksheets in the same way as the skipper character,
+but without modifying the workbook.
+
+Example: ['Sheet1', 'Sheet2']
+
+Default: []
 
 ### Destination Table Name
 `$tablename` *(string*)
@@ -614,7 +630,6 @@ class UsersTableSeeder extends SpreadsheetSeeder
 ### Text Output
 `$textOutput` *(boolean)* or *(string*) or *(array []*)
 
-
 * Set to false to disable output of textual markdown tables.
 * `true` defaults to `'markdown'` output for backward compatibility.
 * `'markdown'` for markdown output
@@ -622,6 +637,19 @@ class UsersTableSeeder extends SpreadsheetSeeder
 * `['markdown', 'yaml']` for both markdown and yaml output
 
 Default: `TRUE`
+
+### Text Output Path
+`$textOutputPath` *(string)*
+Note: In development, subject to change
+
+Path for text output
+
+After processing a workbook, the seeder outputs a text format of
+the sheet to assist with diff and merge of the workbook.  The default path
+is in the same path as the input workbook.  Setting this path places the output
+files in a different location.
+
+Default: "";
 
 ### Timestamps
 `$timestamps` *(string/boolean TRUE)*
@@ -675,6 +703,27 @@ Example: `['start_date', 'finish_date']`;
 
 Default: `[]`
 
+### UUID
+`$uuid` *(array [])*
+
+This is an array of column names in the data source that the seeder will generate 
+a UUID for.
+
+The UUID generated is a type 4 "Random" UUID using laravel Str::uuid() helper
+https://laravel.com/docs/10.x/helpers#method-str-uuid
+
+If the spreadsheet has the column and has a UUID value in the column, the seeder 
+will use the UUID value from the spreadsheet.
+
+If the spreadsheet has any other value in the column or is empty, the seder will
+generate a new UUID value.
+
+If the spreadsheet does not have the column, use [$addColumns](#add-columns) to 
+add the column, and also use $uuid (this setting) to generate a UUID for the added column.
+
+Example: ['uuid']
+
+Default: []
 
 ### Validate
 `$validate` *(array [])*
@@ -683,11 +732,6 @@ This is an associative array mapping column names in the data source that
 should be validated to a Laravel Validator validation rule.
 The available validation rules are described here:
 [https://laravel.com/docs/master/validation#available-validation-rules](https://laravel.com/docs/master/validation#available-validation-rules)
-
-Note: this setting is currently global and applies to all files or
-worksheets that are processed.  All columns with the specified name in all files
-or worksheets will have the validation rule applied.  To apply differently to
-different files, process files with separate Seeder instances.
 
 Example:
 ```
