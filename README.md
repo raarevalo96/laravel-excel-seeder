@@ -34,6 +34,7 @@ This package is tested against the following Laravel versions
 * Laravel 8.x
 * Laravel 9.x
 * Laravel 10.x
+* Laravel 11.x
 
 ## Contents
 - [Installation](#installation)
@@ -48,7 +49,7 @@ This package is tested against the following Laravel versions
 - [Changes](#changes)
 
 ## Installation
-### Laravel 8.x, 9.x, 10.x
+### Laravel 8.x, 9.x, 10.x, 11.x
 - Require this package directly by `composer require --dev -W bfinlay/laravel-excel-seeder`
 - Or add this package in your composer.json and run `composer update`
 
@@ -64,7 +65,7 @@ Laravel 5.8, 6.x, and 7.x require DBAL 2.x.  Because DBAL is a `require-dev` dep
 constraint will not be resolved by composer when installing a child package.  However, this is easy to solve by specifying DBAL 2.x as
 an additional dependency.
 
-Note that Laravel 5.8, 6.x, 7.x, and 8.x are EOL.  See https://laravelversions.com/en.
+Note that Laravel 5.8, 6.x, 7.x, 8.x, and 9.x are EOL.  See https://laravelversions.com/en.
 These versions will continue to be supported by this package for as long as reasonably possible, thanks to github actions performing the testing.
 
 To install for Laravel 5.8, 6.x, and 7.x:
@@ -86,7 +87,7 @@ To install for Laravel 5.8, 6.x, and 7.x:
 In the simplest form, you can use the `bfinlay\SpreadsheetSeeder\SpreadsheetSeeder`
 as is and it will process all XLSX files in `/database/seeds/*.xlsx` and `/database/seeders/*.xlsx` (relative to Laravel project base path).
 
-Just add the SpreadsheetSeeder to be called in your `/database/seeds/DatabaseSeeder.php` (Laravel 5.8, 6.x, 7.x) or `/database/seeder/DatabaseSeeder.php` (Laravel 8.x, 9.x) class.
+Just add the SpreadsheetSeeder to be called in your `/database/seeds/DatabaseSeeder.php` (Laravel 5.8, 6.x, 7.x) or `/database/seeder/DatabaseSeeder.php` (Laravel 8.X and newer) class.
 
 ```php
 use Illuminate\Database\Seeder;
@@ -108,7 +109,7 @@ class DatabaseSeeder extends Seeder
 }
 ```
 
-Place your spreadsheets into the path `/database/seeds/` (Laravel 5.8, 6.x, 7.x) or `/database/seeders/` (Laravel 8.x, 9.x) of your Laravel project.
+Place your spreadsheets into the path `/database/seeds/` (Laravel 5.8, 6.x, 7.x) or `/database/seeders/` (Laravel 8.x and newer) of your Laravel project.
 
 With the default settings, the seeder makes certain assumptions about the XLSX files:
 * worksheet (tab) names match --> table names in database
@@ -360,7 +361,7 @@ of [Symfony Finder](https://symfony.com/doc/current/components/finder.html),
 which is a component that is already included with Laravel.
 
 By default, the seeder will process all XLSX files in /database/seeds (for Laravel 5.8 - 7.x)
-and /database/seeders (for Laravel 8.x).
+and /database/seeders (for Laravel 8.x and newer).
 
 The path is specified relative to the root of the project
 
@@ -394,7 +395,7 @@ which is a component that is already included with Laravel.
 
 When using Finder, the path is not relative to `base_path()` by default.
 To make the path relative to `base_path()` prepend it to the finder path.
-You could also use one of the other [Laravel path helpers](https://laravel.com/docs/8.x/helpers#method-base-path) .
+You could also use one of the other [Laravel path helpers](https://laravel.com/docs/master/helpers#method-base-path) .
 
 Example:
 ```php
