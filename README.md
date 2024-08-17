@@ -236,7 +236,7 @@ See [Text Output](#text-output) for more information.
 * [Text Output Path](#text-output-path) - path for text output
 * [Timestamps](#timestamps) - when true, set the Laravel timestamp columns 'created_at' and 'updated_at' with current date/time (default: true)
 * [Truncate](#truncate-destination-table) - truncate the table before seeding (default: true)
-* [Truncate Ignore Foreign Key Constraints](#truncate-ignore-foreign) - truncate the table before seeding (default: true)
+* [Truncate Ignore Foreign Key Constraints](#truncate-destination-table-ignoring-foreign-key-constraints) - truncate the table before seeding (default: true)
 * [Unix Timestamps](#unix-timestamps) - interpret date/time values as unix timestamps instead of excel timestamps for specified columns (default: no columns)
 * [UUID](#uuid) - array of column names that the seeder will generate a UUID for.
 * [Validate](#validate) - map column names to laravel validation rules
@@ -997,6 +997,11 @@ MySQL automatically handles the sequence counter for its auto-incrementing colum
 Excel Seeder for Laravel is open-sourced software licensed under the MIT license.
 
 ## Changes
+#### 3.4.1
+- Fix issue #27.  Add MariaDB containers and MariaDB tests.  Improve test cases for empty values and explicit null values.
+#### 3.4.0
+- Add support for Laravel 11, issue #25
+- initial fix for issue #26, incompatible updates in Orchestra test framework
 #### 3.3.3
 - Fix for RefreshDatabase, issue #19
 #### 3.3.2
